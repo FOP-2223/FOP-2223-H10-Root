@@ -20,7 +20,7 @@ public class SkipList<T> {
     /**
      * The comparator used to maintain order in this list.
      */
-    private final Comparator<? super T> cmp;
+    protected final Comparator<? super T> cmp;
 
     /**
      * The maximum level of the skip list.
