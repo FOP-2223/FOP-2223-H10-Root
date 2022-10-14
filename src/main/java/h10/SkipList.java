@@ -55,7 +55,7 @@ public class SkipList<T> {
      * @param probability the probability function used to determine if a node should be added on another level
      */
     public SkipList(Comparator<T> cmp, int maxHeight, Probability probability) {
-        this.cmp = Comparator.nullsFirst(cmp);
+        this.cmp = cmp;
         this.maxHeight = maxHeight;
         this.probability = probability;
     }
