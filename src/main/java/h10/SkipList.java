@@ -54,7 +54,7 @@ public class SkipList<T> {
      * @param maxHeight   the maximum level of the skip list
      * @param probability the probability function used to determine if a node should be added on another level
      */
-    public SkipList(Comparator<T> cmp, int maxHeight, Probability probability) {
+    public SkipList(Comparator<? super T> cmp, int maxHeight, Probability probability) {
         this.cmp = cmp;
         this.maxHeight = maxHeight;
         this.probability = probability;
