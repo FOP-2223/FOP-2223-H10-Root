@@ -55,12 +55,12 @@ public class ExpressNode<T> {
     public @Nullable ListItem<ExpressNode<T>> prev;
 
     /**
-     * The predecessor node to the previous level of this node
+     * The predecessor node to the previous level of this node.
      */
     public @Nullable ListItem<ExpressNode<T>> up;
 
     /**
-     * The successor node to the next level of this node
+     * The successor node to the next level of this node.
      */
     public @Nullable ListItem<ExpressNode<T>> down;
 

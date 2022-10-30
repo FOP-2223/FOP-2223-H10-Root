@@ -2,10 +2,8 @@ package h10;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * Represents a skip list.
@@ -74,7 +72,7 @@ public class SkipList<T> {
      *
      * @return the number of items in the skip list
      */
-    public int getSize() {
+    public int size() {
         return size;
     }
 
@@ -84,8 +82,8 @@ public class SkipList<T> {
      *
      * @param key the element to search for
      *
-     * @return the first occurrence of the specified element in this list, or {@code null} if this list does not contain
-     * the element
+     * @return the first occurrence of the specified element in this list, or {@code null} if this list does not
+     * contain the element
      */
     private ListItem<ExpressNode<T>> get(T key) {
         if (isEmpty()) {
@@ -94,8 +92,12 @@ public class SkipList<T> {
         ListItem<ExpressNode<T>> previous = head;
         // Remember sentinel value for going down if the first element is greater than the searched one
         while (previous != null) {
+            if (previous.next == null) {
+                // Edge case if we are moving down on many levels at once, since the last element is <
+                previous = previous.key.down;
+                continue;
+            }
             // Skip the sentinel node
-            assert previous.next != null;
             ListItem<ExpressNode<T>> node = previous.next;
             int value = cmp.compare(node.key.value, key);
             if (value == 0) {
@@ -104,6 +106,10 @@ public class SkipList<T> {
             } else if (node.next != null && value < 0) {
                 // Key can be on the same level
                 previous = previous.next;
+            } else if (node.next == null && value < 0) {
+                // Go down on the last node
+                previous = node;
+                previous = previous.key.down;
             } else {
                 // Key can be on the lower level
                 previous = previous.key.down;
@@ -134,14 +140,28 @@ public class SkipList<T> {
         // Store the potential previous nodes for each level where an insertion
         ListItem<ListItem<ExpressNode<T>>> positions = null;
         while (previous != null) {
+            if (previous.next == null) {
+                // Edge case if we are moving down on many levels at once, since the last element is <
+                ListItem<ListItem<ExpressNode<T>>> item = new ListItem<>();
+                item.key = previous;
+                // The lowest level will be the first element in the list
+                // Insertion at the beginning of the list
+                item.next = positions;
+                positions = item;
+                previous = previous.key.down;
+                continue;
+            }
             // Skip the sentinel node
-            assert previous.next != null;
             ListItem<ExpressNode<T>> node = previous.next;
             int value = cmp.compare(node.key.value, key);
             if (node.next != null && value < 0) {
                 // Key can be on the same level
                 previous = previous.next;
             } else {
+                if (node.next == null && value < 0) {
+                    // Go down on the last node
+                    previous = node;
+                }
                 // Go down, remember potential insertion position
                 ListItem<ListItem<ExpressNode<T>>> item = new ListItem<>();
                 item.key = previous;
@@ -155,6 +175,7 @@ public class SkipList<T> {
 
         // Potential insertions on each level
         int height = 1;
+        ListItem<ExpressNode<T>> lowerLevelNode = null;
         do {
             if (head == null) {
                 // Empty list, create the first level and sentinel node
@@ -165,6 +186,7 @@ public class SkipList<T> {
                 ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
                 node.key = head;
                 positions = node;
+                currentMaxLevel++;
             } else if (height > currentMaxLevel) {
                 // Create new level if it does not exist (new upper level)
                 ListItem<ExpressNode<T>> newHead = new ListItem<>();
@@ -172,12 +194,23 @@ public class SkipList<T> {
                 newHead.key.down = head;
                 head.key.up = newHead;
                 head = newHead;
+
+                ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
+                node.key = head;
+                positions = node;
+                currentMaxLevel++;
             }
-            ListItem<ExpressNode<T>> current = positions.key;
             ListItem<ExpressNode<T>> node = new ListItem<>();
             node.key = new ExpressNode<>();
             node.key.value = key;
 
+            // Connect lower and upper levels
+            if (lowerLevelNode != null) {
+                node.key.down = lowerLevelNode;
+                lowerLevelNode.key.up = node;
+            }
+
+            ListItem<ExpressNode<T>> current = positions.key;
             if (current.next != null) {
                 // Last node does not have a next node, so we do not need to adjust the references
                 current.next.key.prev = node;
@@ -188,8 +221,9 @@ public class SkipList<T> {
             current.next = node;
 
             positions = positions.next;
-        }
-        while (positions != null && probability.nextBoolean());
+            height++;
+            lowerLevelNode = node;
+        } while ((positions != null || height <= maxHeight) && probability.nextBoolean());
         size++;
     }
 
@@ -205,7 +239,7 @@ public class SkipList<T> {
             size--;
         }
         while (walker != null) {
-            ListItem<ExpressNode<T>> next = walker.key.down;
+            ListItem<ExpressNode<T>> lowerLevel = walker.key.down;
             // Cannot be null since get returns non-null values if the element is found
             // We checked that walker != null
             assert walker.key.prev != null;
@@ -216,6 +250,9 @@ public class SkipList<T> {
                     // Since walker is non-null, the list is not empty
                     assert head != null;
                     head = head.key.down;
+                    if (lowerLevel != null) {
+                        lowerLevel.key.up = null;
+                    }
                 } else {
                     // Adjust reference from up and down levels
                     walker.key.up.key.down = walker.key.down;
@@ -231,7 +268,7 @@ public class SkipList<T> {
                     walker.next.key.prev = walker.key.prev;
                 }
             }
-            walker = next;
+            walker = lowerLevel;
         }
     }
 
