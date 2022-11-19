@@ -1,38 +1,41 @@
-import org.sourcegrade.submitter.submit
-
+@Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     java
     application
-    id("org.sourcegrade.style") version "1.3.0"
-    id("org.sourcegrade.submitter") version "0.4.0"
+    alias(libs.plugins.style)
+    alias(libs.plugins.jagr.gradle)
 }
 
-version = "0.1.0-SNAPSHOT"
+version = file("version").readLines().first()
 
-repositories {
-    mavenCentral()
-}
-
-submit {
-    assignmentId = "h10"
-    studentId = "ab12cdef"
-    firstName = "sol_first"
-    lastName = "sol_last"
-    requireTests = false
-}
-
-val grader: SourceSet by sourceSets.creating {
-    val test = sourceSets.test.get()
-    compileClasspath += test.output + test.compileClasspath
-    runtimeClasspath += output + test.runtimeClasspath
+jagr {
+    assignmentId.set("h10")
+    submissions {
+        val main by creating {
+            studentId.set("ab12cdef")
+            firstName.set("sol_first")
+            lastName.set("sol_last")
+        }
+    }
+    graders {
+        val graderPublic by creating {
+            graderName.set("FOP-2223-H10-Public")
+            rubricProviderName.set("h10.H10_RubricProvider")
+            configureDependencies {
+                implementation(libs.algoutils.tutor)
+            }
+        }
+        val graderPrivate by creating {
+            parent(graderPublic)
+            graderName.set("FOP-2223-H10-Private")
+        }
+    }
 }
 
 dependencies {
-    implementation("org.jetbrains:annotations:23.0.0")
-    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.4.0") {
-        exclude("org.jetbrains", "annotations")
-    }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    implementation(libs.annotations)
+    implementation(libs.algoutils.student)
+    testImplementation(libs.junit.core)
 }
 
 application {
@@ -41,7 +44,7 @@ application {
 
 tasks {
     val runDir = File("build/run")
-    named<JavaExec>("run") {
+    withType<JavaExec> {
         doFirst {
             runDir.mkdirs()
         }
@@ -54,62 +57,9 @@ tasks {
         workingDir = runDir
         useJUnitPlatform()
     }
-    val graderTest by creating(Test::class) {
-        group = "verification"
-        doFirst {
-            runDir.mkdirs()
-        }
-        workingDir = runDir
-        testClassesDirs = grader.output.classesDirs
-        classpath = grader.compileClasspath + grader.runtimeClasspath
-        useJUnitPlatform()
-    }
-    named("check") {
-        dependsOn(graderTest)
-    }
-    val graderJar by creating(Jar::class) {
-        group = "build"
-        afterEvaluate {
-            archiveFileName.set("FOP-2223-H10-Root-${project.version}.jar")
-            from(sourceSets.main.get().allSource)
-            from(sourceSets.test.get().allSource)
-            from(grader.allSource)
-        }
-    }
-    val graderLibs by creating(Jar::class) {
-        group = "build"
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        // don't include Jagr's runtime dependencies
-        val jagrRuntime = configurations["graderCompileClasspath"]
-            .resolvedConfiguration
-            .firstLevelModuleDependencies
-            .first { it.moduleGroup == "org.sourcegrade" && it.moduleName == "jagr-launcher" }
-            .allModuleArtifacts
-            .map { it.file }
-
-        val runtimeDeps = grader.runtimeClasspath.mapNotNull {
-            if (it.path.toLowerCase().contains("h10") || jagrRuntime.contains(it)) {
-                null
-            } else if (it.isDirectory) {
-                it
-            } else {
-                zipTree(it)
-            }
-        }
-        from(runtimeDeps)
-        archiveFileName.set("FOP-2223-H10-Root-${project.version}-libs.jar")
-    }
-    create("graderAll") {
-        group = "build"
-        dependsOn(graderJar, graderLibs)
-    }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = "17"
         targetCompatibility = "17"
-    }
-    jar {
-        enabled = false
     }
 }
