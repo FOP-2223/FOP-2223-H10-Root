@@ -23,12 +23,12 @@ public class SkipList<T> {
     /**
      * The maximum level of the skip list.
      */
-    private final int maxHeight;
+    private final int maxLevel;
 
     /**
      * The probability function used to determine if a node should be added on another level.
      */
-    private final Probability probability;
+    private Probability probability;
 
     /**
      * The head of the skip list.
@@ -46,6 +46,16 @@ public class SkipList<T> {
     int size = 0;
 
     /**
+     * Constructs and initializes an empty skip list without the probability to add elements on higher levels..
+     *
+     * @param cmp       the comparator used to maintain order in this list
+     * @param maxHeight the maximum level of the skip list
+     */
+    public SkipList(Comparator<? super T> cmp, int maxHeight) {
+        this(cmp, maxHeight, () -> false);
+    }
+
+    /**
      * Constructs and initializes an empty skip list.
      *
      * @param cmp         the comparator used to maintain order in this list
@@ -54,17 +64,44 @@ public class SkipList<T> {
      */
     public SkipList(Comparator<? super T> cmp, int maxHeight, Probability probability) {
         this.cmp = cmp;
-        this.maxHeight = maxHeight;
+        this.maxLevel = maxHeight;
         this.probability = probability;
     }
 
     /**
-     * Returns the number of items in the skip list.
+     * Returns the current height of the skip list.
      *
-     * @return the number of items in the skip list
+     * @return the current height of the skip list
      */
     public int getCurrentMaxLevel() {
         return currentMaxLevel;
+    }
+
+    /**
+     * Returns the max height of the skip list.
+     *
+     * @return the max height of the skip list
+     */
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    /**
+     * Returns the probability function used to determine if a node should be added on another level.
+     *
+     * @return the probability function used to determine if a node should be added on another leve
+     */
+    public Probability getProbability() {
+        return probability;
+    }
+
+    /**
+     * Sets the probability function used to determine if a node should be added on another level.
+     *
+     * @param probability the probability function
+     */
+    public void setProbability(Probability probability) {
+        this.probability = probability;
     }
 
     /**
@@ -154,11 +191,11 @@ public class SkipList<T> {
             // Skip the sentinel node
             ListItem<ExpressNode<T>> node = previous.next;
             int value = cmp.compare(node.key.value, key);
-            if (node.next != null && value < 0) {
+            if (node.next != null && value <= 0) {
                 // Key can be on the same level
                 previous = previous.next;
             } else {
-                if (node.next == null && value < 0) {
+                if (node.next == null && value <= 0) {
                     // Go down on the last node
                     previous = node;
                 }
@@ -223,7 +260,7 @@ public class SkipList<T> {
             positions = positions.next;
             height++;
             lowerLevelNode = node;
-        } while ((positions != null || height <= maxHeight) && probability.nextBoolean());
+        } while ((positions != null || height <= maxLevel) && probability.nextBoolean());
         size++;
     }
 
@@ -290,13 +327,12 @@ public class SkipList<T> {
             return false;
         }
         SkipList<?> skipList = (SkipList<?>) o;
-        return currentMaxLevel == skipList.currentMaxLevel && size == skipList.size
-            && Objects.equals(head, skipList.head);
+        return currentMaxLevel == skipList.currentMaxLevel && size == skipList.size && Objects.equals(head, skipList.head);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(maxHeight, head, currentMaxLevel, size);
+        return Objects.hash(maxLevel, head, currentMaxLevel, size);
     }
 
     @Override
