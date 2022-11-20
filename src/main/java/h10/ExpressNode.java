@@ -79,8 +79,10 @@ public class ExpressNode<T> {
             return false;
         }
         ExpressNode<?> that = (ExpressNode<?>) o;
-        return Objects.equals(value, that.value) && Objects.equals(prev, that.prev)
-            && Objects.equals(up, that.up) && Objects.equals(down, that.down);
+        return Objects.equals(value, that.value)
+            && Objects.equals(prev, that.prev)
+            && Objects.equals(up, that.up)
+            && Objects.equals(down, that.down);
     }
 
     @Override

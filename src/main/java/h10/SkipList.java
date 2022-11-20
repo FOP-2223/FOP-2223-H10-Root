@@ -46,7 +46,7 @@ public class SkipList<T> {
     int size = 0;
 
     /**
-     * Constructs and initializes an empty skip list without the probability to add elements on higher levels..
+     * Constructs and initializes an empty skip list without the probability to add elements on higher levels.
      *
      * @param cmp       the comparator used to maintain order in this list
      * @param maxHeight the maximum level of the skip list
@@ -120,7 +120,7 @@ public class SkipList<T> {
      * @param key the element to search for
      *
      * @return the first occurrence of the specified element in this list, or {@code null} if this list does not
-     *      contain the element
+     *         contain the element
      */
     private ListItem<ExpressNode<T>> get(T key) {
         if (isEmpty()) {
@@ -176,6 +176,7 @@ public class SkipList<T> {
         ListItem<ExpressNode<T>> previous = head;
         // Store the potential previous nodes for each level where an insertion
         ListItem<ListItem<ExpressNode<T>>> positions = null;
+        // Find insertion position on all levels
         while (previous != null) {
             if (previous.next == null) {
                 // Edge case if we are moving down on many levels at once, since the last element is <
@@ -271,10 +272,15 @@ public class SkipList<T> {
      * @param key the element to be removed from this list, if present
      */
     public void remove(T key) {
+        // Get the first occurrence of the element
         ListItem<ExpressNode<T>> walker = get(key);
+
+        // If the element is not null, that means it is present in the list
         if (walker != null) {
             size--;
         }
+
+        // Removal of element on all levels
         while (walker != null) {
             ListItem<ExpressNode<T>> lowerLevel = walker.key.down;
             // Cannot be null since get returns non-null values if the element is found
@@ -327,7 +333,9 @@ public class SkipList<T> {
             return false;
         }
         SkipList<?> skipList = (SkipList<?>) o;
-        return currentMaxLevel == skipList.currentMaxLevel && size == skipList.size && Objects.equals(head, skipList.head);
+        return currentMaxLevel == skipList.currentMaxLevel
+            && size == skipList.size
+            && Objects.equals(head, skipList.head);
     }
 
     @Override
