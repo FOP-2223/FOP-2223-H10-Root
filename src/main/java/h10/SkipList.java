@@ -49,38 +49,38 @@ public class SkipList<T> {
      * Constructs and initializes an empty skip list without the probability to add elements on higher levels.
      *
      * @param cmp       the comparator used to maintain order in this list
-     * @param maxHeight the maximum level of the skip list
+     * @param maxLevel the maximum level of the skip list
      */
-    public SkipList(Comparator<? super T> cmp, int maxHeight) {
-        this(cmp, maxHeight, () -> false);
+    public SkipList(Comparator<? super T> cmp, int maxLevel) {
+        this(cmp, maxLevel, () -> false);
     }
 
     /**
      * Constructs and initializes an empty skip list.
      *
      * @param cmp         the comparator used to maintain order in this list
-     * @param maxHeight   the maximum level of the skip list
+     * @param maxLevel   the maximum level of the skip list
      * @param probability the probability function used to determine if a node should be added on another level
      */
-    public SkipList(Comparator<? super T> cmp, int maxHeight, Probability probability) {
+    public SkipList(Comparator<? super T> cmp, int maxLevel, Probability probability) {
         this.cmp = cmp;
-        this.maxLevel = maxHeight;
+        this.maxLevel = maxLevel;
         this.probability = probability;
     }
 
     /**
-     * Returns the current height of the skip list.
+     * Returns the current highest level of this skip list.
      *
-     * @return the current height of the skip list
+     * @return the current highest level of this skip list
      */
     public int getCurrentMaxLevel() {
         return currentMaxLevel;
     }
 
     /**
-     * Returns the max height of the skip list.
+     * Returns the maximum level this skip list can have.
      *
-     * @return the max height of the skip list
+     * @return the maximum level this skip list can have
      */
     public int getMaxLevel() {
         return maxLevel;
@@ -105,9 +105,9 @@ public class SkipList<T> {
     }
 
     /**
-     * Returns the number of items in the skip list.
+     * Returns the number of items in this skip list.
      *
-     * @return the number of items in the skip list
+     * @return the number of items in this skip list
      */
     public int size() {
         return size;
