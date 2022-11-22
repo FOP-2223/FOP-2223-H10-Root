@@ -33,7 +33,7 @@ public final class H1_PublicTests {
      * @return the context for the given list operation
      */
     static Context context(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "contains(Object)")
+        return contextBuilderList(list, "SkipList#contains(Object)")
             .add("Method", "contains(Object)")
             .add("Element to search for", key)
             .build();

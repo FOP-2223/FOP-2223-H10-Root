@@ -40,7 +40,7 @@ public final class H2_PublicTests {
      * @return the pre context for the given list operation
      */
     static Context contextPre(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "add(Object)")
+        return contextBuilderList(list, "SkipList#add(Object)")
             .add("Method", "add(Object)")
             .add("Element to add", key)
             .build();
@@ -378,7 +378,7 @@ public final class H2_PublicTests {
             assertNotNull(
                 node,
                 context,
-                result -> String.format("The call of the method add(%s) should add the element %s to the level %s, "
+                result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
                     + "and the successor node should reference to it, but no successor node given.", key, key, level)
             );
             assert node != null;
@@ -394,7 +394,7 @@ public final class H2_PublicTests {
                 key,
                 node.key.prev.key.value,
                 context,
-                result -> String.format("The call of the method add(%s) should add the element %s to the level %s, "
+                result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
                         + "and the successor node should reference to it, but given previous node %s.", key, key,
                     level, result.object())
             );

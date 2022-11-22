@@ -39,8 +39,8 @@ public final class H3_PublicTests {
      * @return the pre context for the given list operation
      */
     static Context contextPre(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "add(Object)")
-            .add("Method", "add(Object)")
+        return contextBuilderList(list, "SkipList#remove(Object)")
+            .add("Method", "remove(Object)")
             .add("Element to remove", key)
             .build();
     }
