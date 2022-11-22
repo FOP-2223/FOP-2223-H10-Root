@@ -11,8 +11,8 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
 import java.util.List;
 
-import static h10.TutorUtils.contextBuilderList;
-import static h10.TutorUtils.listItemAsList;
+import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
@@ -28,7 +28,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @DisplayName("H3")
 @TestForSubmission
 @SuppressWarnings("unchecked")
-public final class H3_Tests {
+public final class H3_PublicTests {
 
     /**
      * Creates a pre context for the given list operation {@link SkipList#remove(Object)}.
@@ -38,7 +38,7 @@ public final class H3_Tests {
      *
      * @return the pre context for the given list operation
      */
-    private static Context contextPre(SkipList<Integer> list, Integer key) {
+    static Context contextPre(SkipList<Integer> list, Integer key) {
         return contextBuilderList(list, "add(Object)")
             .add("Method", "add(Object)")
             .add("Element to remove", key)
@@ -53,7 +53,7 @@ public final class H3_Tests {
      *
      * @return the post context for the given list operation
      */
-    private static Context contextPost(Context preContext, SkipList<Integer> list) {
+    static Context contextPost(Context preContext, SkipList<Integer> list) {
         return contextBuilder().add(preContext)
             .add("Elements after removal", list)
             .add("Size after removal", list.size)

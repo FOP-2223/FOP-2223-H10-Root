@@ -9,7 +9,7 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
-import static h10.TutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.contextBuilderList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertFalse;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
@@ -22,7 +22,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertT
 @DisplayName("H1")
 @TestForSubmission
 @SuppressWarnings("unchecked")
-public final class H1_Tests {
+public final class H1_PublicTests {
 
     /**
      * Creates a context for the given list operation {@link SkipList#contains(Object)}.
@@ -32,7 +32,7 @@ public final class H1_Tests {
      *
      * @return the context for the given list operation
      */
-    private static Context context(SkipList<Integer> list, Integer key) {
+    static Context context(SkipList<Integer> list, Integer key) {
         return contextBuilderList(list, "contains(Object)")
             .add("Method", "contains(Object)")
             .add("Element to search for", key)

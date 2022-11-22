@@ -11,10 +11,10 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
 import java.util.List;
 
-import static h10.TutorUtils.PROBABILITY_ALWAYS_ADD;
-import static h10.TutorUtils.contextBuilderList;
-import static h10.TutorUtils.copy;
-import static h10.TutorUtils.listItemAsList;
+import static h10.PublicTutorUtils.PROBABILITY_ALWAYS_ADD;
+import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.copy;
+import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
@@ -29,7 +29,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @DisplayName("H2")
 @TestForSubmission
 @SuppressWarnings({"unchecked", "DuplicatedCode"})
-public final class H2_Tests {
+public final class H2_PublicTests {
 
     /**
      * Creates a pre context for the given list operation {@link SkipList#add(Object)}.
@@ -39,7 +39,7 @@ public final class H2_Tests {
      *
      * @return the pre context for the given list operation
      */
-    private static Context contextPre(SkipList<Integer> list, Integer key) {
+    static Context contextPre(SkipList<Integer> list, Integer key) {
         return contextBuilderList(list, "add(Object)")
             .add("Method", "add(Object)")
             .add("Element to add", key)
@@ -54,7 +54,7 @@ public final class H2_Tests {
      *
      * @return the post context for the given list operation
      */
-    private static Context contextPost(Context preContext, SkipList<Integer> list) {
+    static Context contextPost(Context preContext, SkipList<Integer> list) {
         return contextBuilder().add(preContext)
             .add("Elements after insertion", list)
             .add("Size after insertion", list.size)

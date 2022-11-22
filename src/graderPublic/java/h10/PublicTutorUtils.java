@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author Nhan Huynh
  */
-public class TutorUtils {
+public class PublicTutorUtils {
 
     /**
      * The probability to always add new element to the list.
@@ -29,7 +29,7 @@ public class TutorUtils {
     /**
      * Don't let anyone instantiate this class.
      */
-    private TutorUtils() {
+    private PublicTutorUtils() {
     }
 
     /**

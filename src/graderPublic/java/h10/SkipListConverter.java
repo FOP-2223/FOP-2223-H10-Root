@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static h10.TutorUtils.linkUpperLevel;
+import static h10.PublicTutorUtils.linkUpperLevel;
 
 /**
  * Converter for converting a JSON object to a {@link SkipList}.
