@@ -25,8 +25,8 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
  * @author Nhan Huynh
  * @see SkipList#remove(Object)
  */
-@TestForSubmission
 @DisplayName("H3")
+@TestForSubmission
 @SuppressWarnings("unchecked")
 public final class H3_Tests {
 

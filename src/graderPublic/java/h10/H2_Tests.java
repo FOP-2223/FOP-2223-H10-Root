@@ -26,8 +26,8 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
  * @author Nhan Huynh
  * @see SkipList#add(Object)
  */
-@TestForSubmission
 @DisplayName("H2")
+@TestForSubmission
 @SuppressWarnings({"unchecked", "DuplicatedCode"})
 public final class H2_Tests {
 

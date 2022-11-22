@@ -1,7 +1,6 @@
 package h10;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -9,10 +8,6 @@ import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import static h10.TutorUtils.contextBuilderList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertFalse;
@@ -24,17 +19,10 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertT
  * @author Nhan Huynh
  * @see SkipList#contains(Object)
  */
-@TestForSubmission
 @DisplayName("H1")
+@TestForSubmission
 @SuppressWarnings("unchecked")
 public final class H1_Tests {
-
-    @Test
-    public void test() {
-        List<Method> methods = new ArrayList<>();
-
-
-    }
 
     /**
      * Creates a context for the given list operation {@link SkipList#contains(Object)}.
