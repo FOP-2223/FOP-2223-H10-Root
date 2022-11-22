@@ -29,7 +29,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 @DisplayName("H2")
 @SuppressWarnings({"unchecked", "DuplicatedCode"})
-public class H2_Tests {
+public final class H2_Tests {
 
     /**
      * Creates a pre context for the given list operation {@link SkipList#add(Object)}.

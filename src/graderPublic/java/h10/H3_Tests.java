@@ -28,7 +28,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 @DisplayName("H3")
 @SuppressWarnings("unchecked")
-public class H3_Tests {
+public final class H3_Tests {
 
     /**
      * Creates a pre context for the given list operation {@link SkipList#remove(Object)}.
