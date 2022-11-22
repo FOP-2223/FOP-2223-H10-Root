@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the utility methods for the testing purposes for the tasks of the assignment H10.
+ * Defines the public utility methods for the testing purposes for the tasks of the assignment H10.
  *
  * @author Nhan Huynh
  */

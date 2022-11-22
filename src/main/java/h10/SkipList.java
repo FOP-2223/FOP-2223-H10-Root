@@ -48,7 +48,7 @@ public class SkipList<T> {
     /**
      * Constructs and initializes an empty skip list without the probability to add elements on higher levels.
      *
-     * @param cmp       the comparator used to maintain order in this list
+     * @param cmp      the comparator used to maintain order in this list
      * @param maxLevel the maximum level of the skip list
      */
     public SkipList(Comparator<? super T> cmp, int maxLevel) {
@@ -59,7 +59,7 @@ public class SkipList<T> {
      * Constructs and initializes an empty skip list.
      *
      * @param cmp         the comparator used to maintain order in this list
-     * @param maxLevel   the maximum level of the skip list
+     * @param maxLevel    the maximum level of the skip list
      * @param probability the probability function used to determine if a node should be added on another level
      */
     public SkipList(Comparator<? super T> cmp, int maxLevel, Probability probability) {
