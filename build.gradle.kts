@@ -23,6 +23,7 @@ jagr {
             rubricProviderName.set("h10.H10_RubricProvider")
             configureDependencies {
                 implementation(libs.algoutils.tutor)
+                implementation(libs.junit.pioneer)
             }
         }
         val graderPrivate by creating {
