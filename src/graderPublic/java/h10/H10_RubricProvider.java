@@ -31,7 +31,7 @@ public final class H10_RubricProvider implements RubricProvider {
     @Override
     public Rubric getRubric() {
         return Rubric.builder()
-            .title("H10 | Verzeigerte Strukturen")
+            .title("H10 | Verzeigerte Strukturen - Public Tests")
             .addChildCriteria(H1, H2, H3)
             .build();
     }
