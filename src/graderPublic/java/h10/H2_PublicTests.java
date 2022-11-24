@@ -58,7 +58,7 @@ public final class H2_PublicTests {
         return contextBuilder().add(preContext)
             .add("Elements after insertion", list)
             .add("Size after insertion", list.size)
-            .add("Current Max Level after insertion", list.getCurrentMaxLevel())
+            .add("height after insertion", list.getHeight())
             .build();
     }
 
@@ -71,7 +71,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "sizes": array of integers
@@ -109,7 +109,7 @@ public final class H2_PublicTests {
     }
 
     /**
-     * Tests if the {@link SkipList#add(Object)} method sets the current max level of the list correctly.
+     * Tests if the {@link SkipList#add(Object)} method sets the height of the list correctly.
      *
      * <p>The parameters are read from the json file with the following structure:
      *
@@ -117,7 +117,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer
      *     }
@@ -140,11 +140,11 @@ public final class H2_PublicTests {
         context = contextPost(context, list);
 
         assertEquals(
-            list.getMaxLevel(),
-            list.getCurrentMaxLevel(),
+            list.maxHeight,
+            list.getHeight(),
             context,
-            result -> String.format("The call of the method add(%s) possibly modified the current max level to %s, but "
-                + "expected %s.", key, result.object(), list.getMaxLevel())
+            result -> String.format("The call of the method add(%s) possibly modified the height to %s, but "
+                + "expected %s.", key, result.object(), list.maxHeight)
         );
     }
 
@@ -157,7 +157,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer
      *     }
@@ -213,7 +213,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "refs": array of integers
@@ -272,7 +272,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer,
      *         "numberOfElementsLevel": array of integers,
@@ -345,7 +345,7 @@ public final class H2_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer,
      *         "refs": array of integers

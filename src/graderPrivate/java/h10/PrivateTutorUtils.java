@@ -25,9 +25,9 @@ public class PrivateTutorUtils {
      */
     public static <T> TutorSkipList<T> copyTutor(TutorSkipList<T> list) {
         SkipList<T> source = copy(list);
-        TutorSkipList<T> copy = new TutorSkipList<>(source.cmp, source.getMaxLevel(), source.getProbability());
+        TutorSkipList<T> copy = new TutorSkipList<>(source.cmp, source.maxHeight, source.getProbability());
         copy.head = source.head;
-        copy.currentMaxLevel = source.currentMaxLevel;
+        copy.height = source.height;
         copy.size = source.size;
         return copy;
     }

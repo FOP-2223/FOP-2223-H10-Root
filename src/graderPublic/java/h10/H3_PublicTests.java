@@ -57,7 +57,7 @@ public final class H3_PublicTests {
         return contextBuilder().add(preContext)
             .add("Elements after removal", list)
             .add("Size after removal", list.size)
-            .add("Current Max Level after removal", list.getCurrentMaxLevel())
+            .add("Current Height after removal", list.getHeight())
             .build();
     }
 
@@ -70,7 +70,7 @@ public final class H3_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "sizes": array of integers,
@@ -108,7 +108,7 @@ public final class H3_PublicTests {
     }
 
     /**
-     * Tests if the {@link SkipList#remove(Object)} method sets the current max level of the list correctly.
+     * Tests if the {@link SkipList#remove(Object)} method sets the height of the list correctly.
      *
      * <p>The parameters are read from the json file with the following structure:
      *
@@ -116,16 +116,16 @@ public final class H3_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer,
-     *         "currentMaxLevel": integer
+     *         "height": integer
      *     }
      * }</pre>
      *
      * @param object          the list to test
      * @param key             the element to add
-     * @param currentMaxLevel the expected current max level of the list
+     * @param height the expected height of the list
      */
     @DisplayName("18 | Methode setzt die aktuelle Maximum Level korrekt.")
     @ParameterizedTest(name = "Test {index}: Aktuelle Höchstebene der Liste nach dem Entfernen von {1} ist {2}.")
@@ -133,7 +133,7 @@ public final class H3_PublicTests {
     public void testRemoveCurrentMaxLevel(
         @Property("list") @ConvertWith(SkipListConverter.class) Object object,
         @Property("key") Integer key,
-        @Property("currentMaxLevel") int currentMaxLevel) {
+        @Property("height") int height) {
         SkipList<Integer> list = (SkipList<Integer>) object;
 
         Context context = contextPre(list, key);
@@ -142,11 +142,11 @@ public final class H3_PublicTests {
 
 
         assertEquals(
-            currentMaxLevel,
-            list.getCurrentMaxLevel(),
+            height,
+            list.getHeight(),
             context,
-            result -> String.format("The call of the method remove(%s) possibly modified the current max level to %s, "
-                + "but expected %s.", key, result.object(), currentMaxLevel)
+            result -> String.format("The call of the method remove(%s) possibly modified the height to %s, "
+                + "but expected %s.", key, result.object(), height)
         );
     }
 
@@ -159,7 +159,7 @@ public final class H3_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer
      *     }
@@ -197,7 +197,7 @@ public final class H3_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "key": integer
      *     }
@@ -205,7 +205,7 @@ public final class H3_PublicTests {
      *
      * @param object          the list to test
      * @param key             the element to add
-     * @param currentMaxLevel the expected current max level of the list after removals
+     * @param height the expected height of the list after removals
      */
     @DisplayName("20 | Methode entfernt Ebenen mit einem Element korrekt.")
     @ParameterizedTest(name = "Test {index}: Entfernung von Listen mit einem Element {1}.")
@@ -213,17 +213,17 @@ public final class H3_PublicTests {
     public void testRemoveSingleElementLists(
         @Property("list") @ConvertWith(SkipListConverter.class) Object object,
         @Property("key") Integer key,
-        @Property("currentMaxLevel") int currentMaxLevel) {
+        @Property("height") int height) {
         SkipList<Integer> list = (SkipList<Integer>) object;
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
-        int currentMaxLevelBefore = list.getCurrentMaxLevel();
+        int currentMaxLevelBefore = list.getHeight();
 
         Context context = contextPre(list, key);
         list.remove(key);
         context = contextPost(context, list);
 
         // Starting level to test
-        int start = currentMaxLevelBefore - currentMaxLevel;
+        int start = currentMaxLevelBefore - height;
         int i = 0;
         for (ListItem<ExpressNode<Integer>> walker = list.head; walker != null; walker = walker.key.down, i++) {
             ListItem<ExpressNode<Integer>> expectedNode = itemRefs.get(start + i).get(0);
@@ -246,7 +246,7 @@ public final class H3_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *     }
      * }</pre>

@@ -11,7 +11,7 @@ import static h10.PublicTutorUtils.criterion;
  *
  * @author Nhan Huynh
  */
-public class H10_RubricProvider implements RubricProvider {
+public class H10_PrivateRubricProvider implements RubricProvider {
 
     /**
      * Defines the private rubric for the task H1.

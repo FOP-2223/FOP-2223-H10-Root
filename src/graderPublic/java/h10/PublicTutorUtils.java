@@ -78,11 +78,11 @@ public class PublicTutorUtils {
         return Assertions2.contextBuilder()
             .subject(subject)
             .add("Comparator", list.cmp)
-            .add("Max Level", list.getMaxLevel())
+            .add("Max Height", list.maxHeight)
             .add("Probability", list.getProbability())
             .add("Elements", list)
             .add("Size", list.size)
-            .add("Current Max Level", list.getCurrentMaxLevel());
+            .add("Current Height", list.getHeight());
     }
 
     /**
@@ -129,9 +129,9 @@ public class PublicTutorUtils {
                 linkUpperLevel(references, item);
             }
         }
-        SkipList<T> copy = new SkipList<>(list.cmp, list.getMaxLevel(), list.getProbability());
+        SkipList<T> copy = new SkipList<>(list.cmp, list.maxHeight, list.getProbability());
         copy.head = head;
-        copy.currentMaxLevel = list.currentMaxLevel;
+        copy.height = list.height;
         copy.size = list.size;
         return copy;
     }

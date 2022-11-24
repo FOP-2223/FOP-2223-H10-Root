@@ -33,9 +33,9 @@ public class SkipListConverter implements ArgumentConverter {
         }
         ArrayList<ArrayList<Integer>> levels = (ArrayList<ArrayList<Integer>>) map.get("levels");
         int maxHeight;
-        if (map.containsKey("maxLevel")) {
-            if (!(map.get("maxLevel") instanceof Integer height)) {
-                throw new ArgumentConversionException("Input does not contain a 'maxLevel' property with type 'integer'");
+        if (map.containsKey("maxHeight")) {
+            if (!(map.get("maxHeight") instanceof Integer height)) {
+                throw new ArgumentConversionException("Input does not contain a 'maxHeight' property with type 'integer'");
             }
             maxHeight = height;
         } else {
@@ -92,7 +92,7 @@ public class SkipListConverter implements ArgumentConverter {
 
         SkipList<Integer> list = new SkipList<>(cmp, maxHeight);
         list.head = head;
-        list.currentMaxLevel = levels.size();
+        list.height = levels.size();
         list.size = levels.size() == 0 ? 0 : levels.get(levels.size() - 1).size();
         return list;
     }

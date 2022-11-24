@@ -42,7 +42,7 @@ public class H3_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *     }
      * }</pre>
@@ -98,7 +98,7 @@ public class H3_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers,
@@ -165,7 +165,7 @@ public class H3_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers
@@ -223,7 +223,7 @@ public class H3_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers,

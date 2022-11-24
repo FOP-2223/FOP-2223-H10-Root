@@ -65,7 +65,7 @@ public final class H1_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers
@@ -98,7 +98,7 @@ public final class H1_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers
@@ -131,7 +131,7 @@ public final class H1_PrivateTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
      *         "comparisons": array of integers

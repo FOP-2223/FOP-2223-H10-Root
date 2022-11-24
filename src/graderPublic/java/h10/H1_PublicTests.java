@@ -48,7 +48,7 @@ public final class H1_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers
      *     }
@@ -84,7 +84,7 @@ public final class H1_PublicTests {
      *     {
      *         "list": {
      *             "levels": 2D array of integers,
-     *             ("maxLevel": integer)
+     *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers
      *     }

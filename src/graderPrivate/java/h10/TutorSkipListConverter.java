@@ -20,9 +20,9 @@ public class TutorSkipListConverter implements ArgumentConverter {
     @SuppressWarnings("unchecked")
     public Object convert(Object source, ParameterContext context) throws ArgumentConversionException {
         SkipList<Integer> list = (SkipList<Integer>) converter.convert(source, context);
-        TutorSkipList<Integer> tutorList = new TutorSkipList<>(list.cmp, list.getMaxLevel(), list.getProbability());
+        TutorSkipList<Integer> tutorList = new TutorSkipList<>(list.cmp, list.maxHeight, list.getProbability());
         tutorList.head = list.head;
-        tutorList.currentMaxLevel = list.currentMaxLevel;
+        tutorList.height = list.height;
         return tutorList;
     }
 

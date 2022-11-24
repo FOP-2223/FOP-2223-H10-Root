@@ -21,9 +21,9 @@ public class SkipList<T> {
     protected final Comparator<? super T> cmp;
 
     /**
-     * The maximum level of the skip list.
+     * The maximum height of the skip list.
      */
-    private final int maxLevel;
+    final int maxHeight;
 
     /**
      * The probability function used to determine if a node should be added on another level.
@@ -36,9 +36,9 @@ public class SkipList<T> {
     @Nullable ListItem<ExpressNode<T>> head;
 
     /**
-     * The current maximum level of the skip list.
+     * The current height of the skip list.
      */
-    int currentMaxLevel = 0;
+    int height = 0;
 
     /**
      * The number of items in the skip list.
@@ -49,41 +49,32 @@ public class SkipList<T> {
      * Constructs and initializes an empty skip list without the probability to add elements on higher levels.
      *
      * @param cmp      the comparator used to maintain order in this list
-     * @param maxLevel the maximum level of the skip list
+     * @param maxHeight the maximum height of the skip list
      */
-    public SkipList(Comparator<? super T> cmp, int maxLevel) {
-        this(cmp, maxLevel, () -> false);
+    public SkipList(Comparator<? super T> cmp, int maxHeight) {
+        this(cmp, maxHeight, () -> false);
     }
 
     /**
      * Constructs and initializes an empty skip list.
      *
      * @param cmp         the comparator used to maintain order in this list
-     * @param maxLevel    the maximum level of the skip list
+     * @param maxHeight    the maximum height of the skip list
      * @param probability the probability function used to determine if a node should be added on another level
      */
-    public SkipList(Comparator<? super T> cmp, int maxLevel, Probability probability) {
+    public SkipList(Comparator<? super T> cmp, int maxHeight, Probability probability) {
         this.cmp = cmp;
-        this.maxLevel = maxLevel;
+        this.maxHeight = maxHeight;
         this.probability = probability;
     }
 
     /**
-     * Returns the current highest level of this skip list.
+     * Returns the current height of this skip list.
      *
-     * @return the current highest level of this skip list
+     * @return the current height of this skip list
      */
-    public int getCurrentMaxLevel() {
-        return currentMaxLevel;
-    }
-
-    /**
-     * Returns the maximum level this skip list can have.
-     *
-     * @return the maximum level this skip list can have
-     */
-    public int getMaxLevel() {
-        return maxLevel;
+    public int getHeight() {
+        return height;
     }
 
     /**
@@ -212,7 +203,7 @@ public class SkipList<T> {
         }
 
         // Potential insertions on each level
-        int height = 1;
+        int currentHeight = 1;
         ListItem<ExpressNode<T>> lowerLevelNode = null;
         do {
             if (head == null) {
@@ -224,8 +215,8 @@ public class SkipList<T> {
                 ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
                 node.key = head;
                 positions = node;
-                currentMaxLevel++;
-            } else if (height > currentMaxLevel) {
+                height++;
+            } else if (currentHeight > height) {
                 // Create new level if it does not exist (new upper level)
                 ListItem<ExpressNode<T>> newHead = new ListItem<>();
                 newHead.key = new ExpressNode<>();
@@ -236,7 +227,7 @@ public class SkipList<T> {
                 ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
                 node.key = head;
                 positions = node;
-                currentMaxLevel++;
+                height++;
             }
             ListItem<ExpressNode<T>> node = new ListItem<>();
             node.key = new ExpressNode<>();
@@ -259,9 +250,9 @@ public class SkipList<T> {
             current.next = node;
 
             positions = positions.next;
-            height++;
+            currentHeight++;
             lowerLevelNode = node;
-        } while ((positions != null || height <= maxLevel) && probability.nextBoolean());
+        } while ((positions != null || currentHeight <= maxHeight) && probability.nextBoolean());
         size++;
     }
 
@@ -303,7 +294,7 @@ public class SkipList<T> {
                     assert walker.key.down != null;
                     walker.key.down.key.up = walker.key.up;
                 }
-                currentMaxLevel--;
+                height--;
             } else {
                 // Adjust reference from prev and next nodes
                 walker.key.prev.next = walker.next;
@@ -333,14 +324,14 @@ public class SkipList<T> {
             return false;
         }
         SkipList<?> skipList = (SkipList<?>) o;
-        return currentMaxLevel == skipList.currentMaxLevel
+        return height == skipList.height
             && size == skipList.size
             && Objects.equals(head, skipList.head);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(maxLevel, head, currentMaxLevel, size);
+        return Objects.hash(maxHeight, head, height, size);
     }
 
     @Override
