@@ -11,13 +11,12 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
 import java.util.List;
 
-import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.contextH3;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertSame;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 /**
  * Defines the public JUnit test cases related to the task H3.
@@ -29,37 +28,6 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 @SuppressWarnings("unchecked")
 public final class H3_PublicTests {
-
-    /**
-     * Creates a pre context for the given list operation {@link SkipList#remove(Object)}.
-     *
-     * @param list the list to execute the operation on
-     * @param key  the element to search for
-     *
-     * @return the pre context for the given list operation
-     */
-    static Context contextPre(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "SkipList#remove(Object)")
-            .add("Method", "remove(Object)")
-            .add("Element to remove", key)
-            .build();
-    }
-
-    /**
-     * Creates a post context for the given list operation {@link SkipList#add(Object)}. This context extend a
-     * context by adding the modification results to the context.
-     *
-     * @param list the list to execute the operation on
-     *
-     * @return the post context for the given list operation
-     */
-    static Context contextPost(Context preContext, SkipList<Integer> list) {
-        return contextBuilder().add(preContext)
-            .add("Elements after removal", list)
-            .add("Size after removal", list.size)
-            .add("Current Height after removal", list.getHeight())
-            .build();
-    }
 
     /**
      * Tests if the {@link SkipList#remove(Object)} method sets the size of the list correctly.
@@ -93,9 +61,7 @@ public final class H3_PublicTests {
             Integer key = keys[i];
             Integer size = sizes[i];
 
-            Context context = contextPre(list, key);
-            list.remove(key);
-            context = contextPost(context, list);
+            Context context = contextH3(list, key);
 
             assertEquals(
                 size,
@@ -136,10 +102,7 @@ public final class H3_PublicTests {
         @Property("height") int height) {
         SkipList<Integer> list = (SkipList<Integer>) object;
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
-
+        Context context = contextH3(list, key);
 
         assertEquals(
             height,
@@ -176,9 +139,7 @@ public final class H3_PublicTests {
         @Property("key") Integer key) {
         SkipList<Integer> list = (SkipList<Integer>) object;
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
+        Context context = contextH3(list, key);
 
         assertNull(
             list.head,
@@ -218,9 +179,7 @@ public final class H3_PublicTests {
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         int currentMaxLevelBefore = list.getHeight();
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
+        Context context = contextH3(list, key);
 
         // Starting level to test
         int start = currentMaxLevelBefore - height;
@@ -262,9 +221,7 @@ public final class H3_PublicTests {
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         Integer key = itemRefs.get(itemRefs.size() - 1).get(1).key.value;
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
+        Context context = contextH3(list, key);
 
         assertNotNull(
             list.head,

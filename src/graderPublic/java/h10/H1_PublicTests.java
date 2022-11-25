@@ -6,10 +6,9 @@ import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
-import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.contextH1;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertFalse;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
@@ -23,21 +22,6 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertT
 @TestForSubmission
 @SuppressWarnings("unchecked")
 public final class H1_PublicTests {
-
-    /**
-     * Creates a context for the given list operation {@link SkipList#contains(Object)}.
-     *
-     * @param list the list to execute the operation on
-     * @param key  the element to search for
-     *
-     * @return the context for the given list operation
-     */
-    static Context context(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "SkipList#contains(Object)")
-            .add("Method", "contains(Object)")
-            .add("Element to search for", key)
-            .build();
-    }
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in list.
@@ -65,10 +49,9 @@ public final class H1_PublicTests {
         @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys) {
         SkipList<Integer> list = (SkipList<Integer>) object;
         for (Integer key : keys) {
-            Context context = context(list, key);
             assertTrue(
                 list.contains(key),
-                context,
+                contextH1(list, key),
                 result -> String.format("The call of the method contains(%s) returned %s, but the list contains the "
                     + "element %s.", key, result.object(), key)
             );
@@ -101,10 +84,9 @@ public final class H1_PublicTests {
         @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys) {
         SkipList<Integer> list = (SkipList<Integer>) object;
         for (Integer key : keys) {
-            Context context = context(list, key);
             assertFalse(
                 list.contains(key),
-                context,
+                contextH1(list, key),
                 result -> String.format("The call of the method contains(%s) returned %s, but the list contains the "
                     + "element %s.", key, result.object(), key)
             );

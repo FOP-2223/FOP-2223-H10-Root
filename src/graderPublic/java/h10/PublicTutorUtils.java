@@ -4,8 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.Grader;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
-import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
+import org.tudalgo.algoutils.tutor.general.match.BasicStringMatchers;
+import org.tudalgo.algoutils.tutor.general.match.MatcherFactories;
+import org.tudalgo.algoutils.tutor.general.reflections.BasicPackageLink;
+import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
+import org.tudalgo.algoutils.tutor.general.reflections.PackageLink;
+import org.tudalgo.algoutils.tutor.general.reflections.TypeLink;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,12 +19,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions3.assertMethodExists;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions3.assertTypeExists;
+import static org.tudalgo.algoutils.tutor.general.match.BasicReflectionMatchers.hasModifiers;
+import static org.tudalgo.algoutils.tutor.general.reflections.Modifier.NON_STATIC;
+
 /**
  * Defines the public utility methods for the testing purposes for the tasks of the assignment H10.
  *
  * @author Nhan Huynh
  */
 public class PublicTutorUtils {
+
+    /**
+     * Link to the package of the assignment H10.
+     */
+    public static final PackageLink LINK_TO_PACKAGE = BasicPackageLink.of("h10");
+
+    /**
+     * A string matcher factory used to create a subject for a context.
+     */
+    private static final MatcherFactories.StringMatcherFactory STRING_MATCHER_FACTORY = BasicStringMatchers::identical;
 
     /**
      * The probability to always add new element to the list.
@@ -67,22 +88,101 @@ public class PublicTutorUtils {
     }
 
     /**
-     * Creates a base context builder for the given skip list containing all information about the lost.
+     * Returns a link to the class for this assignment.
      *
-     * @param list    the skip list to create the context builder for
-     * @param subject the subject of the context
-     *
-     * @return the context builder for the given skip list
+     * @return a link to the class for this assignment
      */
-    public static Context.Builder<?> contextBuilderList(SkipList<Integer> list, Object subject) {
-        return Assertions2.contextBuilder()
-            .subject(subject)
+    public static TypeLink linkClass() {
+        return assertTypeExists(
+            LINK_TO_PACKAGE,
+            STRING_MATCHER_FACTORY.matcher(SkipList.class.getSimpleName())
+        );
+    }
+
+    /**
+     * Returns a link to the method with the specified name.
+     *
+     * @param methodName the name of the method
+     *
+     * @return a link to the method with the specified name
+     */
+    public static MethodLink linkMethod(String methodName) {
+        return assertMethodExists(
+            linkClass(),
+            STRING_MATCHER_FACTORY.matcher(methodName).and(hasModifiers(NON_STATIC))
+        );
+    }
+
+    /**
+     * Returns a basic context for a skip list.
+     *
+     * @param list the list to access information from
+     * @param <T>  the type of the list
+     *
+     * @return the basic context for a skip list
+     */
+    public static <T> Context contextList(SkipList<T> list) {
+        return contextBuilder()
+            .subject(linkClass())
             .add("Comparator", list.cmp)
             .add("Max Height", list.maxHeight)
             .add("Probability", list.getProbability())
             .add("Elements", list)
             .add("Size", list.size)
-            .add("Current Height", list.getHeight());
+            .add("Current Height", list.getHeight())
+            .build();
+    }
+
+    /**
+     * Creates a context for the given list operation {@link SkipList#contains(Object)}.
+     *
+     * @param list the list to execute the operation on
+     * @param key  the element to search for
+     *
+     * @return the context for the given list operation
+     */
+    public static <T> Context contextH1(SkipList<T> list, T key) {
+        return contextBuilder()
+            .subject(linkMethod("contains"))
+            .add("Element to search for", key)
+            .add("SkipList properties", contextList(list))
+            .build();
+    }
+
+    /**
+     * Creates a context for the given list operation {@link SkipList#add(Object)}.
+     *
+     * @param list the list to execute the operation on
+     * @param key  the element to search for
+     *
+     * @return the context for the given list operation
+     */
+    public static <T> Context contextH2(SkipList<T> list, T key) {
+        Context.Builder<?> builder = contextBuilder()
+            .subject(linkMethod("add"))
+            .add("Element to add", key)
+            .add("Before insertion", contextList(list));
+        list.add(key);
+        return builder.add("After insertion", contextList(list))
+            .build();
+    }
+
+    /**
+     * Creates a context for the given list operation {@link SkipList#remove(Object)}.
+     *
+     * @param list the list to execute the operation on
+     * @param key  the element to search for
+     *
+     * @return the context for the given list operation
+     */
+    public static <T> Context contextH3(SkipList<T> list, T key) {
+        Context.Builder<?> builder = contextBuilder()
+            .subject(linkMethod("add"))
+            .add("Element to remove", key)
+            .add("Before removal", contextList(list));
+        list.remove(key);
+        return builder.add("After removal", contextList(list))
+            .build();
     }
 
     /**
@@ -99,7 +199,8 @@ public class PublicTutorUtils {
         ListItem<ExpressNode<T>> head = null;
         ListItem<ExpressNode<T>> tail = null;
 
-        for (ListItem<ExpressNode<T>> currentLevel = list.head; currentLevel != null; currentLevel = currentLevel.key.down) {
+        for (ListItem<ExpressNode<T>> currentLevel = list.head; currentLevel != null;
+             currentLevel = currentLevel.key.down) {
             // Create a new level with its nodes, each level starts with a sentinel node
             ListItem<ExpressNode<T>> sentinel = new ListItem<>();
             sentinel.key = new ExpressNode<>();

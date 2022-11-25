@@ -12,13 +12,12 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.List;
 
 import static h10.PublicTutorUtils.PROBABILITY_ALWAYS_ADD;
-import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.contextH2;
 import static h10.PublicTutorUtils.copy;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 /**
  * Defines the public JUnit test cases related to the task H2.
@@ -30,37 +29,6 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 @SuppressWarnings({"unchecked", "DuplicatedCode"})
 public final class H2_PublicTests {
-
-    /**
-     * Creates a pre context for the given list operation {@link SkipList#add(Object)}.
-     *
-     * @param list the list to execute the operation on
-     * @param key  the element to search for
-     *
-     * @return the pre context for the given list operation
-     */
-    static Context contextPre(SkipList<Integer> list, Integer key) {
-        return contextBuilderList(list, "SkipList#add(Object)")
-            .add("Method", "add(Object)")
-            .add("Element to add", key)
-            .build();
-    }
-
-    /**
-     * Creates a post context for the given list operation {@link SkipList#add(Object)}. This context extend a
-     * context by adding the modification results to the context.
-     *
-     * @param list the list to execute the operation on
-     *
-     * @return the post context for the given list operation
-     */
-    static Context contextPost(Context preContext, SkipList<Integer> list) {
-        return contextBuilder().add(preContext)
-            .add("Elements after insertion", list)
-            .add("Size after insertion", list.size)
-            .add("height after insertion", list.getHeight())
-            .build();
-    }
 
     /**
      * Tests if the {@link SkipList#add(Object)} method sets the size of the list correctly.
@@ -94,9 +62,7 @@ public final class H2_PublicTests {
             Integer key = keys[i];
             Integer size = sizes[i];
 
-            Context context = contextPre(list, key);
-            list.add(key);
-            context = contextPost(context, list);
+            Context context = contextH2(list, key);
 
             assertEquals(
                 size,
@@ -135,9 +101,7 @@ public final class H2_PublicTests {
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(PROBABILITY_ALWAYS_ADD);
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         assertEquals(
             list.maxHeight,
@@ -175,9 +139,7 @@ public final class H2_PublicTests {
     ) {
         SkipList<Integer> list = (SkipList<Integer>) object;
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         assertNotNull(
             list.head,
@@ -239,9 +201,7 @@ public final class H2_PublicTests {
             Integer key = keys[i];
             Integer ref = refs[i];
 
-            Context context = contextPre(list, key);
-            list.add(key);
-            context = contextPost(context, list);
+            Context context = contextH2(list, key);
 
             // Offset is 1 because of the sentinel node
             ListItem<ExpressNode<Integer>> node = itemRefs.get(itemRefs.size() - 1).get(ref + 1);
@@ -309,9 +269,7 @@ public final class H2_PublicTests {
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(probability);
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         for (int i = 0; i < numberOfElementsLevel.length; i++) {
@@ -366,29 +324,14 @@ public final class H2_PublicTests {
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(PROBABILITY_ALWAYS_ADD);
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         for (int i = 0; i < refs.length; i++) {
             int level = i;
             ListItem<ExpressNode<Integer>> node = itemRefs.get(i).get(refs[i] + 1);
 
-            assertNotNull(
-                node,
-                context,
-                result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
-                    + "and the successor node should reference to it, but no successor node given.", key, key, level)
-            );
             assert node != null;
-            assertNotNull(
-                node.key.prev,
-                context,
-                result -> String.format("The call of the method add(%s) should add the element %s on  the level %s, "
-                        + "and the successor node should reference to it, but no previous reference given.", key, key,
-                    level)
-            );
             assert node.key.prev != null;
             assertEquals(
                 key,

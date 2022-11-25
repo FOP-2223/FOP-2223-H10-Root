@@ -12,15 +12,15 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.Arrays;
 import java.util.List;
 
-import static h10.H3_PublicTests.contextPost;
-import static h10.H3_PublicTests.contextPre;
 import static h10.PrivateTutorUtils.copyTutor;
-import static h10.PublicTutorUtils.contextBuilderList;
+import static h10.PublicTutorUtils.contextH3;
+import static h10.PublicTutorUtils.contextList;
+import static h10.PublicTutorUtils.linkMethod;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertSame;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 /**
  * Defines the private JUnit test cases related to the task H3.
@@ -61,9 +61,7 @@ public class H3_PrivateTests {
         List<ListItem<ExpressNode<Integer>>> last = itemRefs.get(itemRefs.size() - 1);
         Integer key = last.get(last.size() - 1).key.value;
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
+        Context context = contextH3(list, key);
 
         assertEquals(
             comparison,
@@ -71,12 +69,6 @@ public class H3_PrivateTests {
             context,
             result -> String.format("The call to remove(%d) should have made %d comparisons, but made %d instead.",
                 key, comparison, result.object())
-        );
-
-        assertNotNull(
-            list.head,
-            context,
-            result -> String.format("The call to remove(%d) should not have removed the entire list.", key)
         );
 
         assert list.head != null;
@@ -127,9 +119,7 @@ public class H3_PrivateTests {
             int index = i;
             Integer key = keys[i];
 
-            Context context = contextPre(list, key);
-            list.remove(key);
-            context = contextPost(context, list);
+            Context context = contextH3(list, key);
 
             assertEquals(
                 comparisons[i],
@@ -184,13 +174,16 @@ public class H3_PrivateTests {
         @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
         @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons) {
         TutorSkipList<Integer> list = (TutorSkipList<Integer>) object;
+        Context.Builder<?> builder = contextBuilder()
+            .subject(linkMethod("remove"))
+            .add("Elements to remove", Arrays.toString(keys))
+            .add("Before removal", contextList(list));
+
         for (int i = 0; i < keys.length; i++) {
             int index = i;
             Integer key = keys[i];
 
-            Context context = contextPre(list, key);
-            list.remove(key);
-            context = contextPost(context, list);
+            Context context = contextH3(list, key);
 
             assertEquals(
                 comparisons[i],
@@ -201,10 +194,7 @@ public class H3_PrivateTests {
             );
         }
 
-        Context context = contextBuilderList(list, "SkipList#remove(Object)")
-            .add("Method", "remove(Object)")
-            .add("Elements to remove", Arrays.toString(keys))
-            .build();
+        Context context = builder.add("After removal", contextList(list)).build();
 
         assertNull(
             list.head,
@@ -244,9 +234,7 @@ public class H3_PrivateTests {
         @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs) {
         SkipList<Integer> list = (SkipList<Integer>) object;
 
-        Context context = contextPre(list, key);
-        list.remove(key);
-        context = contextPost(context, list);
+        Context context = contextH3(list, key);
 
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         for (int i = 0; i < refs.length; i++) {
@@ -254,13 +242,6 @@ public class H3_PrivateTests {
             ListItem<ExpressNode<Integer>> successor = itemRefs.get(i).get(refs[i] + 1);
             ListItem<ExpressNode<Integer>> previous = itemRefs.get(i).get(refs[i]);
 
-            assertNotNull(
-                successor,
-                context,
-                result -> String.format("The call of the method remove(%s) should remove the element %s on the level "
-                        + "%s, and the successor node should reference to it, but no successor node given.", key, key,
-                    level)
-            );
             assert successor != null;
             assertSame(
                 previous,

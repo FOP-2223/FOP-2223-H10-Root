@@ -11,12 +11,10 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
 import java.util.List;
 
-import static h10.H2_PublicTests.contextPost;
-import static h10.H2_PublicTests.contextPre;
 import static h10.PublicTutorUtils.PROBABILITY_ALWAYS_ADD;
+import static h10.PublicTutorUtils.contextH2;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 
 /**
  * Defines the private JUnit test cases related to the task H2.
@@ -45,9 +43,7 @@ public class H2_PrivateTests {
         TutorSkipList<Integer> list = (TutorSkipList<Integer>) object;
         list.setProbability(PROBABILITY_ALWAYS_ADD);
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         assertEquals(
             comparison,
@@ -259,9 +255,7 @@ public class H2_PrivateTests {
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(PROBABILITY_ALWAYS_ADD);
 
-        Context context = contextPre(list, key);
-        list.add(key);
-        context = contextPost(context, list);
+        Context context = contextH2(list, key);
 
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         for (int i = 0; i < refs.length; i++) {
@@ -269,12 +263,6 @@ public class H2_PrivateTests {
             ListItem<ExpressNode<Integer>> node = itemRefs.get(i).get(refs[i] + 1);
             assert node != null;
             if (i != 0) {
-                assertNotNull(
-                    node.key.up,
-                    context,
-                    result -> String.format("The call of add(%d) should set the up reference of the node on level %d, "
-                        + " but no up reference exists.", key, level)
-                );
                 assert node.key.up != null;
                 assertEquals(
                     key,
@@ -285,12 +273,6 @@ public class H2_PrivateTests {
                 );
             }
             if (i != refs.length - 1) {
-                assertNotNull(
-                    node.key.down,
-                    context,
-                    result -> String.format("The call of add(%d) should set the down reference of the node on level "
-                        + "%d, but no down reference exists.", key, level)
-                );
                 assert node.key.down != null;
                 assertEquals(
                     key,
