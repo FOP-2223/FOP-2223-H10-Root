@@ -6,7 +6,7 @@ import java.util.Objects;
 
 /**
  * An instance of this class represents an express node of a {@link SkipList} which allows access to the upper and lower
- * levels of the skip list.
+ * levels and previous nodes of the skip list.
  *
  * <p>Example:
  * <pre>{@code
@@ -75,14 +75,13 @@ public class ExpressNode<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ExpressNode<?> other)) {
             return false;
         }
-        ExpressNode<?> that = (ExpressNode<?>) o;
-        return Objects.equals(value, that.value)
-            && Objects.equals(prev, that.prev)
-            && Objects.equals(up, that.up)
-            && Objects.equals(down, that.down);
+        return Objects.equals(value, other.value)
+            && Objects.equals(prev, other.prev)
+            && Objects.equals(up, other.up)
+            && Objects.equals(down, other.down);
     }
 
     @Override

@@ -6,7 +6,22 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * Represents a skip list.
+ * Represents a skip list. A skip list is a rabdinuzed data structure that allows fast access to elements in a sorted
+ * list.
+ *
+ * <p>Its a two-dimensional linked list where the lowest level contains all elements and each higher level contains a
+ * subset of the elements of the lower level.
+ *
+ * <p>Example:
+ * <pre>{@code
+ *  head ----------------- 47
+ *   |                     |
+ *   |------ 12 --------- 47
+ *   |       |            |
+ *   |------ 12 -------- 47 -- 72
+ *   |       |           |    |
+ *   | 5 -- 12 -- 17 -- 47 -- 72 -- 98
+ * }</pre>
  *
  * @param <T> the type of the elements in this list
  *
@@ -48,7 +63,7 @@ public class SkipList<T> {
     /**
      * Constructs and initializes an empty skip list without the probability to add elements on higher levels.
      *
-     * @param cmp      the comparator used to maintain order in this list
+     * @param cmp       the comparator used to maintain order in this list
      * @param maxHeight the maximum height of the skip list
      */
     public SkipList(Comparator<? super T> cmp, int maxHeight) {
@@ -59,7 +74,7 @@ public class SkipList<T> {
      * Constructs and initializes an empty skip list.
      *
      * @param cmp         the comparator used to maintain order in this list
-     * @param maxHeight    the maximum height of the skip list
+     * @param maxHeight   the maximum height of the skip list
      * @param probability the probability function used to determine if a node should be added on another level
      */
     public SkipList(Comparator<? super T> cmp, int maxHeight, Probability probability) {
@@ -158,12 +173,14 @@ public class SkipList<T> {
     }
 
     /**
-     * Adds the specified element to this list. The element will be added on the highest floor of the skip list and on
-     * the next levels if the probability function returns {@code true}.
+     * Returns all possible insertion points for the specified element in this list. The order is from the lowest level
+     * to the highest level.
      *
-     * @param key the element to be added
+     * @param key the element to insert
+     *
+     * @return all possible insertion points for the specified element in this list
      */
-    public void add(T key) {
+    private ListItem<ListItem<ExpressNode<T>>> getPreviousInsertionNodes(T key) {
         ListItem<ExpressNode<T>> previous = head;
         // Store the potential previous nodes for each level where an insertion
         ListItem<ListItem<ExpressNode<T>>> positions = null;
@@ -201,7 +218,17 @@ public class SkipList<T> {
                 previous = previous.key.down;
             }
         }
+        return positions;
+    }
 
+    /**
+     * Adds the specified element to this list. The element will be added on the highest floor of the skip list and on
+     * the next levels if the probability function returns {@code true}.
+     *
+     * @param key the element to be added
+     */
+    public void add(T key) {
+        ListItem<ListItem<ExpressNode<T>>> positions = getPreviousInsertionNodes(key);
         // Potential insertions on each level
         int currentHeight = 1;
         ListItem<ExpressNode<T>> lowerLevelNode = null;
@@ -320,13 +347,13 @@ public class SkipList<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        // Check instance of to avoid ClassCastException
+        if (!(o instanceof SkipList<?> other)) {
             return false;
         }
-        SkipList<?> skipList = (SkipList<?>) o;
-        return height == skipList.height
-            && size == skipList.size
-            && Objects.equals(head, skipList.head);
+        return height == other.height
+            && size == other.size
+            && Objects.equals(head, other.head);
     }
 
     @Override
