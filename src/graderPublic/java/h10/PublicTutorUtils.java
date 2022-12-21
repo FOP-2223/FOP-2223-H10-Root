@@ -12,12 +12,14 @@ import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
 import org.tudalgo.algoutils.tutor.general.reflections.PackageLink;
 import org.tudalgo.algoutils.tutor.general.reflections.TypeLink;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions3.assertMethodExists;
@@ -61,18 +63,27 @@ public class PublicTutorUtils {
      *
      * @return the {@link Criterion} for the given class
      */
-    public static Criterion criterion(String description, Class<?> sourceClass) {
-        return Criterion.builder()
-            .shortDescription(description)
-            .addChildCriteria(
-                // Get all test methods from the given class -> create a criterion for each test method
-                // -> add the criterion to the list of child criteria
-                Arrays.stream(sourceClass.getDeclaredMethods())
-                    .filter(method -> method.isAnnotationPresent(DisplayName.class))
-                    .sorted(Comparator.comparing(method -> method.getAnnotation(DisplayName.class).value()))
-                    .map(method ->
-                        // Skip display name prefix: XX | Description
-                        Criterion.builder().shortDescription(method.getAnnotation(DisplayName.class).value().substring(5))
+    /**
+     * Returns the {@link Criterion} for the given class.
+     *
+     * @param description       the description of the criterion
+     * @param sourceClass       the class to search for test methods
+     * @param shortDescriptions the short descriptions of the ungraded child criteria
+     *
+     * @return the {@link Criterion} for the given class
+     */
+    public static Criterion criterion(String description, Class<?> sourceClass, String... shortDescriptions) {
+        // Get all test methods from the given class -> create a criterion for each test method
+        // -> add the criterion to the list of child criteria
+        Stream<AbstractMap.SimpleEntry<Integer, Criterion>> graded = Arrays.stream(sourceClass.getDeclaredMethods())
+            .filter(method -> method.isAnnotationPresent(DisplayName.class))
+            .sorted(Comparator.comparing(method -> method.getAnnotation(DisplayName.class).value()))
+            .map(method -> {
+                    // Skip display name prefix: XX | Description
+                    String shortDescription = method.getAnnotation(DisplayName.class).value();
+                    return new AbstractMap.SimpleEntry<>(
+                        Integer.parseInt(shortDescription.substring(0, 2)),
+                        Criterion.builder().shortDescription(shortDescription.substring(5))
                             .grader(
                                 Grader.testAwareBuilder()
                                     .requirePass(JUnitTestRef.ofMethod(method))
@@ -81,9 +92,26 @@ public class PublicTutorUtils {
                                     .build()
                             )
                             .build()
-                    )
-                    .toArray(Criterion[]::new)
-            )
+                    );
+                }
+            );
+
+        Stream<AbstractMap.SimpleEntry<Integer, Criterion>> ungraded =
+            Arrays.stream(shortDescriptions).map(shortDescription ->
+                // Skip display name prefix: XX | Description
+                new AbstractMap.SimpleEntry<>(
+                    Integer.parseInt(shortDescription.substring(0, 2)),
+                    new UngradedCriterionBuilder(shortDescription.substring(5)).build()
+                )
+            );
+
+        Criterion[] all = Stream.concat(graded, ungraded)
+            .sorted(Map.Entry.comparingByKey())
+            .map(AbstractMap.SimpleEntry::getValue).toArray(Criterion[]::new);
+
+        return Criterion.builder()
+            .shortDescription(description)
+            .addChildCriteria(all)
             .build();
     }
 
