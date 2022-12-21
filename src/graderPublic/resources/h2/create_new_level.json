@@ -1,0 +1,24 @@
+{
+  "list": {
+    "levels": [
+      [
+        5,
+        12,
+        17,
+        47,
+        72,
+        98
+      ]
+    ],
+    "maxHeight": 6
+  },
+  "key": 50,
+  "numberOfElementsLevel": [
+    1,
+    7
+  ],
+  "refs": [
+    0,
+    4
+  ]
+}

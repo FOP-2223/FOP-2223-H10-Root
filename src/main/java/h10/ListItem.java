@@ -49,11 +49,11 @@ public class ListItem<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        // instance of
+        if (!(o instanceof ListItem<?> other)) {
             return false;
         }
-        ListItem<?> listItem = (ListItem<?>) o;
-        return Objects.equals(key, listItem.key) && Objects.equals(next, listItem.next);
+        return Objects.equals(key, other.key) && Objects.equals(next, other.next);
     }
 
     @Override
