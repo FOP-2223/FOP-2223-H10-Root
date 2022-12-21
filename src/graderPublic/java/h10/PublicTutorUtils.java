@@ -58,14 +58,6 @@ public class PublicTutorUtils {
     /**
      * Returns the {@link Criterion} for the given class.
      *
-     * @param description the description of the criterion
-     * @param sourceClass the class to search for test methods
-     *
-     * @return the {@link Criterion} for the given class
-     */
-    /**
-     * Returns the {@link Criterion} for the given class.
-     *
      * @param description       the description of the criterion
      * @param sourceClass       the class to search for test methods
      * @param shortDescriptions the short descriptions of the ungraded child criteria
