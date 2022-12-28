@@ -92,7 +92,7 @@ public final class H2_PublicTests {
      * @param object the list to test
      * @param key    the element to add
      */
-    @DisplayName("07 | Methode setzt die aktuelle Maximum Level korrekt.")
+    @DisplayName("07 | Methode setzt die Höhe korrekt.")
     @ParameterizedTest(name = "Test {index}: Aktuelle Höchstebene der Liste nach dem Einfügen von {1} ist {2}.")
     @JsonClasspathSource("h2/current_max_level.json")
     public void testAddCurrentMaxLevel(
@@ -245,7 +245,7 @@ public final class H2_PublicTests {
      * @param numberOfElementsLevel the number of elements on each level
      * @param refs                  the indices of the added elements
      */
-    @DisplayName("10 | Methode erstellt neue Ebene korrekt.")
+    @DisplayName("10 | Methode erstellt neue Ebenen korrekt.")
     @ParameterizedTest(name = "Test {index}: Erstellen einer neuen Ebene beim Einfügen von {1}.")
     @JsonClasspathSource("h2/create_new_level.json")
     public void testAddCreateLevel(

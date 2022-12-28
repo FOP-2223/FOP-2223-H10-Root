@@ -93,7 +93,7 @@ public final class H3_PublicTests {
      * @param key             the element to add
      * @param height the expected height of the list
      */
-    @DisplayName("18 | Methode setzt die aktuelle Maximum Level korrekt.")
+    @DisplayName("18 | Methode setzt die aktuelle Höhe korrekt.")
     @ParameterizedTest(name = "Test {index}: Aktuelle Höchstebene der Liste nach dem Entfernen von {1} ist {2}.")
     @JsonClasspathSource("h3/current_max_level.json")
     public void testRemoveCurrentMaxLevel(
