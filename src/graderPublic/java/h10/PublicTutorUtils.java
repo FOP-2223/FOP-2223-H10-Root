@@ -144,12 +144,12 @@ public class PublicTutorUtils {
     public static <T> Context contextList(SkipList<T> list) {
         return contextBuilder()
             .subject(linkClass())
-            .add("Comparator", list.cmp)
-            .add("Max Height", list.maxHeight)
+            .add("Comparator", list.cmp.toString())
+            .add("Max Height", String.valueOf(list.maxHeight))
             .add("Probability", list.getProbability())
-            .add("Elements", list)
-            .add("Size", list.size)
-            .add("Current Height", list.getHeight())
+            .add("Elements", list.toString())
+            .add("Size", String.valueOf(list.size()))
+            .add("Current Height", String.valueOf(list.height))
             .build();
     }
 
