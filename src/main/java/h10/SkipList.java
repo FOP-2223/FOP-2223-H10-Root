@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * Represents a skip list. A skip list is a rabdinuzed data structure that allows fast access to elements in a sorted
+ * Represents a skip list. A skip list is a randomized data structure that allows fast access to elements in a sorted
  * list.
  *
  * <p>Its a two-dimensional linked list where the lowest level contains all elements and each higher level contains a
