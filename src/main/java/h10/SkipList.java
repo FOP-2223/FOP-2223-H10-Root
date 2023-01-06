@@ -266,6 +266,7 @@ public class SkipList<T> {
                 lowerLevelNode.key.up = node;
             }
 
+            assert positions != null;
             ListItem<ExpressNode<T>> current = positions.key;
             if (current.next != null) {
                 // Last node does not have a next node, so we do not need to adjust the references
