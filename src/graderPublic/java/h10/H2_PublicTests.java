@@ -338,7 +338,7 @@ public final class H2_PublicTests {
                 node.key.prev.key.value,
                 context,
                 result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
-                        + "and the successor node should reference to it, but given previous node %s.", key, key,
+                        + "and the predecessor node should reference to it, but given previous node %s.", key, key,
                     level, result.object())
             );
         }
