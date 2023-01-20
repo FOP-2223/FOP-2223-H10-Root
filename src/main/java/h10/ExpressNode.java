@@ -86,7 +86,27 @@ public class ExpressNode<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, prev, up, down);
+        return Objects.hash(value, hashCode(prev), hashCode(up), hashCode(down));
+    }
+
+    /**
+     * Returns the hash code for the specified list item sequence using the following formula:
+     * <pre>{@code
+     *    for each value in the sequence:
+     *      31 * hashCode + (value == null ? 0 : value.hashCode())
+     *    }</pre>
+     *
+     * @param item the list item sequence to compute the hash code for
+     *
+     * @return the hash code for the specified list item sequence
+     */
+    private int hashCode(ListItem<ExpressNode<T>> item) {
+        int hashCode = 1;
+        for (ListItem<ExpressNode<T>> current = item; current != null; current = current.next) {
+            hashCode = 31 * hashCode + ((current.key == null || current.key.value == null) ?
+                0 : current.key.value.hashCode());
+        }
+        return hashCode;
     }
 
     @Override
