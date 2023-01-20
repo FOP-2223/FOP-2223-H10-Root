@@ -104,6 +104,14 @@ public class TutorSkipList<T> extends SkipList<T> {
             comparisons = 0;
         }
 
+        @Override
+        public String toString() {
+            return "CounterComparator{" +
+                "comparisons=" + comparisons +
+                ", real=" + real +
+                '}';
+        }
+
     }
 
 }
