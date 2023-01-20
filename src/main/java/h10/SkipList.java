@@ -126,36 +126,32 @@ public class SkipList<T> {
      * @param key the element to search for
      *
      * @return the first occurrence of the specified element in this list, or {@code null} if this list does not
-     *         contain the element
+     * contain the element
      */
     private ListItem<ExpressNode<T>> get(T key) {
         if (isEmpty()) {
             return null;
         }
-        ListItem<ExpressNode<T>> previous = head;
+        ListItem<ExpressNode<T>> current = head;
         // Remember sentinel value for going down if the first element is greater than the searched one
-        while (previous != null) {
-            if (previous.next == null) {
-                // Edge case if we are moving down on many levels at once, since the last element is <
-                previous = previous.key.down;
+        while (current != null) {
+            // If we are on the last node of the current level, go down
+            if (current.next == null) {
+                current = current.key.down;
                 continue;
             }
             // Skip the sentinel node
-            ListItem<ExpressNode<T>> node = previous.next;
-            int value = cmp.compare(node.key.value, key);
+            ListItem<ExpressNode<T>> successor = current.next;
+            int value = cmp.compare(successor.key.value, key);
             if (value == 0) {
                 // Key found
-                return node;
-            } else if (node.next != null && value < 0) {
+                return successor;
+            } else if (value < 0) {
                 // Key can be on the same level
-                previous = previous.next;
-            } else if (node.next == null && value < 0) {
-                // Go down on the last node
-                previous = node;
-                previous = previous.key.down;
+                current = current.next;
             } else {
                 // Key can be on the lower level
-                previous = previous.key.down;
+                current = current.key.down;
             }
         }
         return null;
@@ -180,42 +176,37 @@ public class SkipList<T> {
      *
      * @return all possible insertion points for the specified element in this list
      */
-    private ListItem<ListItem<ExpressNode<T>>> getPreviousInsertionNodes(T key) {
-        ListItem<ExpressNode<T>> previous = head;
+    private ListItem<ListItem<ExpressNode<T>>> getInsertionPositions(T key) {
+        ListItem<ExpressNode<T>> current = head;
         // Store the potential previous nodes for each level where an insertion
         ListItem<ListItem<ExpressNode<T>>> positions = null;
         // Find insertion position on all levels
-        while (previous != null) {
-            if (previous.next == null) {
-                // Edge case if we are moving down on many levels at once, since the last element is <
-                ListItem<ListItem<ExpressNode<T>>> item = new ListItem<>();
-                item.key = previous;
+        while (current != null) {
+            // If we are on the last node of the current level, go down
+            if (current.next == null) {
+                ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
+                node.key = current;
                 // The lowest level will be the first element in the list
                 // Insertion at the beginning of the list
-                item.next = positions;
-                positions = item;
-                previous = previous.key.down;
+                node.next = positions;
+                positions = node;
+                current = current.key.down;
                 continue;
             }
-            // Skip the sentinel node
-            ListItem<ExpressNode<T>> node = previous.next;
-            int value = cmp.compare(node.key.value, key);
-            if (node.next != null && value <= 0) {
+            ListItem<ExpressNode<T>> sucessor = current.next;
+            int value = cmp.compare(sucessor.key.value, key);
+            if (value <= 0) {
                 // Key can be on the same level
-                previous = previous.next;
+                current = current.next;
             } else {
-                if (node.next == null && value <= 0) {
-                    // Go down on the last node
-                    previous = node;
-                }
                 // Go down, remember potential insertion position
-                ListItem<ListItem<ExpressNode<T>>> item = new ListItem<>();
-                item.key = previous;
+                ListItem<ListItem<ExpressNode<T>>> node = new ListItem<>();
+                node.key = current;
                 // The lowest level will be the first element in the list
                 // Insertion at the beginning of the list
-                item.next = positions;
-                positions = item;
-                previous = previous.key.down;
+                node.next = positions;
+                positions = node;
+                current = current.key.down;
             }
         }
         return positions;
@@ -228,7 +219,7 @@ public class SkipList<T> {
      * @param key the element to be added
      */
     public void add(T key) {
-        ListItem<ListItem<ExpressNode<T>>> positions = getPreviousInsertionNodes(key);
+        ListItem<ListItem<ExpressNode<T>>> positions = getInsertionPositions(key);
         // Potential insertions on each level
         int currentHeight = 1;
         ListItem<ExpressNode<T>> lowerLevelNode = null;
@@ -292,22 +283,22 @@ public class SkipList<T> {
      */
     public void remove(T key) {
         // Get the first occurrence of the element
-        ListItem<ExpressNode<T>> walker = get(key);
+        ListItem<ExpressNode<T>> current = get(key);
 
         // If the element is not null, that means it is present in the list
-        if (walker != null) {
+        if (current != null) {
             size--;
         }
 
         // Removal of element on all levels
-        while (walker != null) {
-            ListItem<ExpressNode<T>> lowerLevel = walker.key.down;
+        while (current != null) {
+            ListItem<ExpressNode<T>> lowerLevel = current.key.down;
             // Cannot be null since get returns non-null values if the element is found
             // We checked that walker != null
-            assert walker.key.prev != null;
-            if (walker.key.prev.key.value == null && walker.next == null) {
+            assert current.key.prev != null;
+            if (current.key.prev.key.value == null && current.next == null) {
                 // Single element list
-                if (walker.key.up == null) {
+                if (current.key.up == null) {
                     // Head should be deleted
                     // Since walker is non-null, the list is not empty
                     assert head != null;
@@ -317,21 +308,21 @@ public class SkipList<T> {
                     }
                 } else {
                     // Adjust reference from up and down levels
-                    assert walker.key.prev.key.up != null;
-                    walker.key.prev.key.up.key.down = walker.key.prev.key.down;
+                    assert current.key.prev.key.up != null;
+                    current.key.prev.key.up.key.down = current.key.prev.key.down;
                     // Since walker is non-null, the list is not empty
-                    assert walker.key.prev.key.down != null;
-                    walker.key.prev.key.down.key.up = walker.key.prev.key.up;
+                    assert current.key.prev.key.down != null;
+                    current.key.prev.key.down.key.up = current.key.prev.key.up;
                 }
                 height--;
             } else {
                 // Adjust reference from prev and next nodes
-                walker.key.prev.next = walker.next;
-                if (walker.next != null) {
-                    walker.next.key.prev = walker.key.prev;
+                current.key.prev.next = current.next;
+                if (current.next != null) {
+                    current.next.key.prev = current.key.prev;
                 }
             }
-            walker = lowerLevel;
+            current = lowerLevel;
         }
     }
 
@@ -367,16 +358,16 @@ public class SkipList<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (ListItem<ExpressNode<T>> walker = head; walker != null; walker = walker.key.down) {
+        for (ListItem<ExpressNode<T>> current = head; current != null; current = current.key.down) {
             sb.append("[");
-            for (ListItem<ExpressNode<T>> walker2 = walker.next; walker2 != null; walker2 = walker2.next) {
-                sb.append(walker2.key.value);
-                if (walker2.next != null) {
+            for (ListItem<ExpressNode<T>> element = current.next; element != null; element = element.next) {
+                sb.append(element.key.value);
+                if (element.next != null) {
                     sb.append(", ");
                 }
             }
             sb.append("]");
-            if (walker.key.down != null) {
+            if (current.key.down != null) {
                 sb.append(", ");
             }
         }
