@@ -41,7 +41,20 @@ public class SkipListConverter implements ArgumentConverter {
         } else {
             maxHeight = levels.size();
         }
-        return createList(levels, Comparator.naturalOrder(), maxHeight);
+        Comparator<Integer> cmp = new Comparator<Integer>() {
+            private final Comparator<Integer> real = Comparator.naturalOrder();
+
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return real.compare(o1, o2);
+            }
+
+            @Override
+            public String toString() {
+                return "Natural Order";
+            }
+        };
+        return createList(levels, cmp, maxHeight);
     }
 
     /**

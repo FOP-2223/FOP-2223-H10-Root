@@ -236,7 +236,8 @@ public final class H2_PublicTests {
      *         }
      *         "key": integer,
      *         "numberOfElementsLevel": array of integers,
-     *         "refs": array of integers
+     *         "refs": array of integers,
+     *         "numberOfLevels: integer
      *     }
      * }</pre>
      *
@@ -244,6 +245,7 @@ public final class H2_PublicTests {
      * @param key                   the element to add
      * @param numberOfElementsLevel the number of elements on each level
      * @param refs                  the indices of the added elements
+     * @param numberOfLevels        the number of levels
      */
     @DisplayName("10 | Methode erstellt neue Ebenen korrekt.")
     @ParameterizedTest(name = "Test {index}: Erstellen einer neuen Ebene beim Einfügen von {1}.")
@@ -252,7 +254,8 @@ public final class H2_PublicTests {
         @Property("list") @ConvertWith(SkipListConverter.class) Object object,
         @Property("key") Integer key,
         @Property("numberOfElementsLevel") @ConvertWith(ArrayConverter.Auto.class) Integer[] numberOfElementsLevel,
-        @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs
+        @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs,
+        @Property("numberOfLevels") int numberOfLevels
     ) {
         Probability probability = new Probability() {
             private boolean first = true;
@@ -265,6 +268,11 @@ public final class H2_PublicTests {
                 }
                 return false;
             }
+
+            @Override
+            public String toString() {
+                return "Only add once";
+            }
         };
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(probability);
@@ -272,6 +280,14 @@ public final class H2_PublicTests {
         Context context = contextH2(list, key);
 
         List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
+        assertEquals(
+            numberOfLevels,
+            itemRefs.size(),
+            context,
+            result -> String.format(
+                "The call of the method add(%s) should change the number of levels to %s, but given %s",
+                key, numberOfLevels, itemRefs.size())
+        );
         for (int i = 0; i < numberOfElementsLevel.length; i++) {
             int level = i;
             List<ListItem<ExpressNode<Integer>>> node = itemRefs.get(i);
@@ -281,14 +297,14 @@ public final class H2_PublicTests {
                 expectedSize,
                 node.size(),
                 context,
-                result -> String.format("The call of the method add(%s) should add the element %s on  the level %s "
-                    + "and modify the size to %s, but given size %s.", key, key, level, expectedSize, result.object())
+                result -> String.format("The call of the method add(%s) should add the element %s on the level %s "
+                    + "and level %s should contain %s elements, but it contains %s elements.", key, key, level, level, expectedSize, result.object())
             );
             assertEquals(
                 key,
                 node.get(refs[i] + 1).key.value,
                 context,
-                result -> String.format("The call of the method add(%s) should add the element %s on  the level %s, "
+                result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
                     + "but given %s.", key, key, level, result.object())
             );
         }
@@ -324,9 +340,9 @@ public final class H2_PublicTests {
         SkipList<Integer> list = (SkipList<Integer>) object;
         list.setProbability(PROBABILITY_ALWAYS_ADD);
 
+        List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         Context context = contextH2(list, key);
 
-        List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
         for (int i = 0; i < refs.length; i++) {
             int level = i;
             ListItem<ExpressNode<Integer>> node = itemRefs.get(i).get(refs[i] + 1);
@@ -338,8 +354,8 @@ public final class H2_PublicTests {
                 node.key.prev.key.value,
                 context,
                 result -> String.format("The call of the method add(%s) should add the element %s on the level %s, "
-                        + "and the predecessor node should reference to it, but given previous node %s.", key, key,
-                    level, result.object())
+                    + "and the predecessor of the successor node %s should reference to it, but given previous "
+                    + "node %s.", key, key, level, node.key.value, result.object())
             );
         }
     }

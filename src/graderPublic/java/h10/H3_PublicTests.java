@@ -15,8 +15,8 @@ import static h10.PublicTutorUtils.contextH3;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertSame;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
 /**
  * Defines the public JUnit test cases related to the task H3.
@@ -89,8 +89,8 @@ public final class H3_PublicTests {
      *     }
      * }</pre>
      *
-     * @param object          the list to test
-     * @param key             the element to add
+     * @param object the list to test
+     * @param key    the element to add
      * @param height the expected height of the list
      */
     @DisplayName("18 | Methode setzt die aktuelle Höhe korrekt.")
@@ -141,16 +141,19 @@ public final class H3_PublicTests {
 
         Context context = contextH3(list, key);
 
-        assertNull(
-            list.head,
+        assertTrue(
+            list.head == null,
             context,
             result -> String.format("The call of the method remove(%s) possibly modified the head to %s, but expected "
-                + "null since we are removing a list containing one element.", key, result.object())
+                    + "null since we are removing a list containing one element.", key,
+                PublicTutorUtils.toString(list.head
+                )
+            )
         );
     }
 
     /**
-     * Tests if the {@link SkipList#remove(Object)} method removes a single element lists correctly.
+     * Tests if the {@link SkipList#remove(Object)} method removes single element lists correctly.
      *
      * <p>The parameters are read from the json file with the following structure:
      *
@@ -164,8 +167,8 @@ public final class H3_PublicTests {
      *     }
      * }</pre>
      *
-     * @param object          the list to test
-     * @param key             the element to add
+     * @param object the list to test
+     * @param key    the element to add
      * @param height the expected height of the list after removals
      */
     @DisplayName("20 | Methode entfernt Ebenen mit einem Element korrekt.")

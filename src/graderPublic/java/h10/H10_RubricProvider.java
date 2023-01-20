@@ -26,9 +26,9 @@ public final class H10_RubricProvider implements RubricProvider {
      */
     private static final Criterion H2 = criterion("H2 | SkipList#add(Object)", H2_PublicTests.class,
         "12 | Methode erstellt neue Ebenen korrekt.",
-        "13 | Methode fügt Element in vorhandenen Ebenen korrekt.",
-        "14 | Methode fügt Element in allen Ebenen korrekt.",
-        "15 | Methode fügt Element vorne/hinten korrekt.",
+        "13 | Methode fügt Element in vorhandenen Ebenen korrekt ein.",
+        "14 | Methode fügt Element in allen Ebenen korrekt ein.",
+        "15 | Methode fügt Element vorne/hinten korrekt ein.",
         "16 | Methode setzt die Referenzen nach oben/unten korrekt."
     );
 

@@ -41,7 +41,7 @@ public final class H1_PublicTests {
      * @param object the list to test
      * @param keys   the element to search for
      */
-    @DisplayName("01 | Methode funktoniert für Elemente, die in der Liste sind, korrekt.")
+    @DisplayName("01 | Methode funktioniert für Elemente, die in der Liste sind, korrekt.")
     @ParameterizedTest(name = "Test {index}: Elemente: {1} werden gefunden.")
     @JsonClasspathSource("h1/true_cases.json")
     public void testContainsTrue(
@@ -76,7 +76,7 @@ public final class H1_PublicTests {
      * @param object the list to test
      * @param keys   the element to search for
      */
-    @DisplayName("02 | Methode funktoniert für Elemente, die nicht in der Liste sind, korrekt.")
+    @DisplayName("02 | Methode funktioniert für Elemente, die nicht in der Liste sind, korrekt.")
     @ParameterizedTest(name = "Test {index}: Elemente: {1} werden nicht gefunden.")
     @JsonClasspathSource("h1/false_cases.json")
     public void testContainsFalse(
