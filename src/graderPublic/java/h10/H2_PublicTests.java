@@ -298,7 +298,8 @@ public final class H2_PublicTests {
                 node.size(),
                 context,
                 result -> String.format("The call of the method add(%s) should add the element %s on the level %s "
-                    + "and level %s should contain %s elements, but it contains %s elements.", key, key, level, level, expectedSize, result.object())
+                    + "and level %s should contain %s elements, but it contains %s elements.", key, key, level, level,
+                    expectedSize, result.object())
             );
             assertEquals(
                 key,
