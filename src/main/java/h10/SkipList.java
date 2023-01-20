@@ -317,10 +317,11 @@ public class SkipList<T> {
                     }
                 } else {
                     // Adjust reference from up and down levels
-                    walker.key.up.key.down = walker.key.down;
+                    assert walker.key.prev.key.up != null;
+                    walker.key.prev.key.up.key.down = walker.key.prev.key.down;
                     // Since walker is non-null, the list is not empty
-                    assert walker.key.down != null;
-                    walker.key.down.key.up = walker.key.up;
+                    assert walker.key.prev.key.down != null;
+                    walker.key.prev.key.down.key.up = walker.key.prev.key.up;
                 }
                 height--;
             } else {
