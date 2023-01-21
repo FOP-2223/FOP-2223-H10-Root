@@ -31,6 +31,21 @@ import java.util.Objects;
 public class SkipList<T> {
 
     /**
+     * The default probability to not add elements on higher levels.
+     */
+    private static final Probability DEFAULT_PROBABILITY = new Probability() {
+        @Override
+        public boolean nextBoolean() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "0%";
+        }
+    };
+
+    /**
      * The comparator used to maintain order in this list.
      */
     protected final Comparator<? super T> cmp;
@@ -67,7 +82,7 @@ public class SkipList<T> {
      * @param maxHeight the maximum height of the skip list
      */
     public SkipList(Comparator<? super T> cmp, int maxHeight) {
-        this(cmp, maxHeight, () -> false);
+        this(cmp, maxHeight, DEFAULT_PROBABILITY);
     }
 
     /**
