@@ -103,8 +103,8 @@ public class ExpressNode<T> {
     private int hashCode(ListItem<ExpressNode<T>> item) {
         int hashCode = 1;
         for (ListItem<ExpressNode<T>> current = item; current != null; current = current.next) {
-            hashCode = 31 * hashCode + ((current.key == null || current.key.value == null) ?
-                0 : current.key.value.hashCode());
+            hashCode = 31 * hashCode + ((current.key == null || current.key.value == null)
+                ? 0 : current.key.value.hashCode());
         }
         return hashCode;
     }
