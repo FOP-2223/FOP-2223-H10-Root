@@ -9,8 +9,12 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
+import java.util.List;
+
+import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH1;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
 /**
@@ -21,44 +25,32 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertT
  */
 @DisplayName("H1")
 @TestForSubmission
-@SuppressWarnings("unchecked")
-public final class H1_PrivateTests {
+public class H1_PrivateTests {
 
     /**
-     * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
-     * and the number of comparisons to find the element is correct.
+     * Asserts that the call of the method contains() returns true and the path of comparisons is correct.
      *
-     * @param object      the list to test
-     * @param keys        the element to search for
-     * @param comparisons the expected number of comparisons
+     * @param object      the skip list to be tested
+     * @param key         the key to be searched
+     * @param comparisons the expected comparisons path
      */
-    private static void assertComparisons(Object object, Integer[] keys, Integer[] comparisons) {
-        TutorSkipList<Integer> list = (TutorSkipList<Integer>) object;
-        for (int i = 0; i < keys.length; i++) {
-            Integer key = keys[i];
-            Integer comparison = comparisons[i];
-            Context context = contextH1(list, key);
-            assertTrue(
-                list.contains(key),
-                context,
-                result -> String.format("The call of the method contains(%s) returned %s, but the list contains the "
-                    + "element %s.", key, result.object(), key)
-            );
-            assertEquals(
-                comparison,
-                list.getComparisonCount(),
-                context,
-                result -> String.format("The call of the method contains(%s) required %s comparisons, but the expected "
-                    + "number of comparisons is %s.", key, result.object(), comparison)
-            );
-        }
+    private static void assertContains(Object object, Integer key, Integer[][] comparisons) {
+        VisitorSkipList<Integer> list = convert(object);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
+        VisitorNode<Integer> node = new VisitorNode<>(key);
+        Context context = contextH1(list, node);
+        assertTrue(
+            list.contains(node),
+            context,
+            result -> String.format("The call of the method contains(%s) returned %s instead of true.",
+                key, result.object())
+        );
+        assertComparisons(nodes, comparisons, context);
     }
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
-     * on the first level and if the number of comparisons to find the element is correct.
-     *
-     * <p>The elements will be searched between the first and last level only.
+     * on the first level and if the path of the comparisons to find the element is correct.
      *
      * <p>The parameters are read from the json file with the following structure:
      * <pre>{@code
@@ -67,31 +59,30 @@ public final class H1_PrivateTests {
      *             "levels": 2D array of integers,
      *             ("maxHeight": integer)
      *         }
-     *         "keys": array of integers,
-     *         "comparisons": array of integers
+     *         "key": integer,
+     *         "comparisons": 2D array of integers
      *     }
      * }</pre>
      *
      * @param object      the list to test
-     * @param keys        the element to search for
-     * @param comparisons the expected number of comparisons
+     * @param key         the element to search for
+     * @param comparisons the expected comparisons path
      */
     @DisplayName("03 | Methode findet die Elemente mit einer minimalen Anzahl an Vergleichen in der obersten Ebene.")
-    @ParameterizedTest(name = "Test {index}: Elemente {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource("h1/first_level.json")
+    @ParameterizedTest(name = "Test {index}: Element {1} mit minimalen Vergleichen {2}.")
+    @JsonClasspathSource({"h1/first/22.json", "h1/first/59.json", "h1/first/70.json"
+        , "h1/first/80.json"})
     public void testContainsFirstLevel(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
-        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("key") Integer key,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons
     ) {
-        assertComparisons(object, keys, comparisons);
+        assertContains(object, key, comparisons);
     }
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
-     * between the first and the last level and if the number of comparisons to find the element is correct.
-     *
-     * <p>The elements will be searched between the first and last level only.
+     * between the first and the last level and if the path of the comparisons to find the element is correct.
      *
      * <p>The parameters are read from the json file with the following structure:
      * <pre>{@code
@@ -101,30 +92,31 @@ public final class H1_PrivateTests {
      *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
-     *         "comparisons": array of integers
+     *         "comparisons": 2D array of integers
      *     }
      * }</pre>
      *
      * @param object      the list to test
-     * @param keys        the element to search for
-     * @param comparisons the expected number of comparisons
+     * @param key         the element to search for
+     * @param comparisons the expected comparisons path
      */
     @DisplayName("04 | Methode findet die Elemente mit einer minimalen Anzahl an Vergleichen in den Zwischenebenen.")
     @ParameterizedTest(name = "Test {index}: Elemente {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource("h1/between_levels.json")
+    @JsonClasspathSource({
+        "h1/between/30.json", "h1/between/148.json", "h1/between/151.json", "h1/between/33.json", "h1/between/34.json",
+        "h1/between/37.json", "h1/between/51.json", "h1/between/160.json", "h1/between/179.json"
+    })
     public void testContainsBetweenLevels(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
-        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("key") Integer key,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons
     ) {
-        assertComparisons(object, keys, comparisons);
+        assertContains(object, key, comparisons);
     }
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
-     * on the last level and if the number of comparisons to find the element is correct.
-     *
-     * <p>The elements will be searched between the first and last level only.
+     * on the last level and if the path of the comparisons to find the element is correct.
      *
      * <p>The parameters are read from the json file with the following structure:
      * <pre>{@code
@@ -133,24 +125,28 @@ public final class H1_PrivateTests {
      *             "levels": 2D array of integers,
      *             ("maxHeight": integer)
      *         }
-     *         "keys": array of integers,
-     *         "comparisons": array of integers
+     *         "key": integer,
+     *         "comparisons": 2D array of integers
      *     }
      * }</pre>
      *
      * @param object      the list to test
-     * @param keys        the element to search for
-     * @param comparisons the expected number of comparisons
+     * @param key         the element to search for
+     * @param comparisons the expected comparisons path
      */
     @DisplayName("05 | Methode findet die Elemente mit einer minimalen Anzahl an Vergleichen in der untersten Ebene.")
     @ParameterizedTest(name = "Test {index}: Elemente {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource("h1/lowest_level.json")
+    @JsonClasspathSource({
+        "h1/lowest/13.json", "h1/lowest/21.json", "h1/lowest/44.json", "h1/lowest/47.json", "h1/lowest/57.json",
+        "h1/lowest/65.json", "h1/lowest/75.json", "h1/lowest/90.json", "h1/lowest/132.json", "h1/lowest/139.json",
+        "h1/lowest/147.json", "h1/lowest/162.json", "h1/lowest/196.json", "h1/lowest/198.json"
+    })
     public void testContainsLowestLevel(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
-        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("key") Integer key,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons
     ) {
-        assertComparisons(object, keys, comparisons);
+        assertContains(object, key, comparisons);
     }
 
 }

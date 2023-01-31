@@ -129,6 +129,7 @@ public class VisitorSkipList<T> extends SkipList<VisitorNode<T>> {
 
         /**
          * Returns the visited nodes.
+         *
          * @return the visited nodes
          */
         public List<VisitorNode<T>> getVisitedNodes() {
