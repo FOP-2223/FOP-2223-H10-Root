@@ -1,6 +1,7 @@
 package h10;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -12,6 +13,7 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.List;
 
 import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.assertUseOnlyConstructorCalls;
 import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.PROBABILITY_ALWAYS_ADD;
 import static h10.PublicTutorUtils.contextH2;
@@ -68,6 +70,15 @@ public class H2_PrivateTests {
                     toAdd, toAdd, level, result.object())
             );
         }
+    }
+
+    /**
+     * Tests the mandatory requirements of the task H2.
+     */
+    @Test
+    @DisplayName("Verbindliche Anforderungen")
+    public void testRequirements() {
+        assertUseOnlyConstructorCalls("add", ListItem.class, ExpressNode.class);
     }
 
     /**

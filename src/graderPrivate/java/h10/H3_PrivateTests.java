@@ -2,6 +2,7 @@ package h10;
 
 import org.apache.maven.api.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -13,6 +14,7 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.List;
 
 import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.assertNoConstructorCalls;
 import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH3;
 import static h10.PublicTutorUtils.listItemAsList;
@@ -29,6 +31,15 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertS
 @DisplayName("H3")
 @TestForSubmission
 public class H3_PrivateTests {
+
+    /**
+     * Tests the mandatory requirements of the task H3.
+     */
+    @Test
+    @DisplayName("Verbindliche Anforderungen")
+    public void testRequirements() {
+        assertNoConstructorCalls("remove");
+    }
 
     /**
      * Tests if the {@link SkipList#remove(Object)} method removes the last element correctly.

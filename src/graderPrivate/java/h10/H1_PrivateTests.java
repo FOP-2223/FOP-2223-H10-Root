@@ -1,6 +1,7 @@
 package h10;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -12,6 +13,7 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.List;
 
 import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.assertNoConstructorCalls;
 import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH1;
 import static h10.PublicTutorUtils.listItemAsList;
@@ -47,6 +49,16 @@ public class H1_PrivateTests {
         );
         assertComparisons(nodes, comparisons, context);
     }
+
+    /**
+     * Tests the mandatory requirements of the task H1.
+     */
+    @Test
+    @DisplayName("Verbindliche Anforderungen")
+    public void testRequirements() {
+        assertNoConstructorCalls("contains");
+    }
+
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
@@ -147,5 +159,4 @@ public class H1_PrivateTests {
     ) {
         assertContains(object, key, comparisons);
     }
-
 }
