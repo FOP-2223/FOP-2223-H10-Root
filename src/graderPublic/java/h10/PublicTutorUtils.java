@@ -118,7 +118,7 @@ public class PublicTutorUtils {
                 // Skip display name prefix: XX | Description
                 new AbstractMap.SimpleEntry<>(
                     Integer.parseInt(shortDescription.substring(0, 2)),
-                    new UngradedCriterionBuilder(shortDescription.substring(5)).build()
+                    Criterion.builder().shortDescription(shortDescription.substring(5)).build()
                 )
             );
 
