@@ -73,12 +73,12 @@ class VisitorNode<T> {
             return false;
         }
         VisitorNode<?> that = (VisitorNode<?>) o;
-        return visited == that.visited && Objects.equals(value, that.value);
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, visited);
+        return Objects.hash(value);
     }
 
     @Override
