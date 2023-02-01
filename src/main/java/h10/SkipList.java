@@ -141,7 +141,7 @@ public class SkipList<T> {
      * @param key the element to search for
      *
      * @return the first occurrence of the specified element in this list, or {@code null} if this list does not
-     * contain the element
+     *         contain the element
      */
     private ListItem<ExpressNode<T>> get(T key) {
         if (isEmpty()) {

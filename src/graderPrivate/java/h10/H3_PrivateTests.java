@@ -1,5 +1,6 @@
 package h10;
 
+import org.apache.maven.api.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -9,18 +10,15 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static h10.PrivateTutorUtils.copyTutor;
+import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH3;
-import static h10.PublicTutorUtils.contextList;
-import static h10.PublicTutorUtils.linkMethod;
 import static h10.PublicTutorUtils.listItemAsList;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertSame;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 /**
  * Defines the private JUnit test cases related to the task H3.
@@ -30,7 +28,6 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
  */
 @DisplayName("H3")
 @TestForSubmission
-@SuppressWarnings({"unchecked", "DuplicatedCode"})
 public class H3_PrivateTests {
 
     /**
@@ -43,40 +40,36 @@ public class H3_PrivateTests {
      *         "list": {
      *             "levels": 2D array of integers,
      *             ("maxHeight": integer)
-     *         }
+     *         },
+     *         "comparisons": 2D array of integers
      *     }
      * }</pre>
      *
-     * @param object     the list to test
-     * @param comparison the expected number of comparisons to find the last element
+     * @param object      the list to test
+     * @param comparisons the expected comparisons path
      */
     @DisplayName("22 | Methode entfernt das letzte Element korrekt.")
     @ParameterizedTest(name = "Test {index}: Entfernung des letzten Elements.")
     @JsonClasspathSource("h3/last_element.json")
     public void testRemoveLastElement(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("comparison") int comparison) {
-        TutorSkipList<Integer> list = (TutorSkipList<Integer>) object;
-        List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
-        List<ListItem<ExpressNode<Integer>>> last = itemRefs.get(itemRefs.size() - 1);
-        Integer key = last.get(last.size() - 1).key.value;
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons) {
+        VisitorSkipList<Integer> list = convert(object);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
+        List<ListItem<ExpressNode<VisitorNode<Integer>>>> last = nodes.get(nodes.size() - 1);
+        VisitorNode<Integer> node = last.get(last.size() - 1).key.value;
 
-        Context context = contextH3(list, key);
+        // In order to not track the actual node, we have to create a new one
+        Context context = contextH3(list, new VisitorNode<>(node.getValue()));
 
-        assertEquals(
-            comparison,
-            list.getComparisonCount(),
-            context,
-            result -> String.format("The call to remove(%d) should have made %d comparisons, but made %d instead.",
-                key, comparison, result.object())
-        );
+        assertComparisons(nodes, comparisons, context);
 
         assert list.head != null;
-        ListItem<ExpressNode<Integer>> actual = last.get(last.size() - 2).next;
+        @Nullable ListItem<ExpressNode<VisitorNode<Integer>>> actual = last.get(last.size() - 2).next;
         assertNull(
             actual,
             context,
-            result -> String.format("The call to remove(%d) should have removed the last element, but given %s.", key,
+            result -> String.format("The call to remove(%s) should have removed the last element, but given %s.", node,
                 result.object())
         );
     }
@@ -93,58 +86,53 @@ public class H3_PrivateTests {
      *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
-     *         "comparisons": array of integers,
+     *         "comparisons": 2D array of integers
      *         "refs: array of 2D arrays of integers
      *     }
      * }</pre>
      *
      * @param object      the list to test
-     * @param keys        the elements to remove
-     * @param comparisons the number of comparisons to find the correct insertion point
+     * @param key         the element to remove
+     * @param comparisons the expected comparisons path
      * @param refs        the indices of the removed elements on each level
      */
     @DisplayName("23 | Methode entfernt die Elemente korrekt.")
     @ParameterizedTest(name = "Test {index}: Entfernung der Elemente {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource("h3/element.json")
+    @JsonClasspathSource({
+        "h3/element/33.json", "h3/element/34.json", "h3/element/37.json",
+        "h3/element/51.json", "h3/element/94.json", "h3/element/148.json"
+    })
     public void testRemoveElement(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
-        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons,
-        @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[][] refs
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("key") Integer key,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons,
+        @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs
     ) {
-        TutorSkipList<Integer> source = (TutorSkipList<Integer>) object;
-        for (int i = 0; i < keys.length; i++) {
-            TutorSkipList<Integer> list = copyTutor(source);
-            List<List<ListItem<ExpressNode<Integer>>>> itemRefs = listItemAsList(list.head);
-            int index = i;
-            Integer key = keys[i];
+        @SuppressWarnings("DuplicatedCode")
+        VisitorSkipList<Integer> list = convert(object);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
+        VisitorNode<Integer> node = new VisitorNode<>(key);
+        Context context = contextH3(list, node);
 
-            Context context = contextH3(list, key);
+        assertComparisons(nodes, comparisons, context);
 
-            assertEquals(
-                comparisons[i],
-                list.getComparisonCount(),
-                context,
-                result -> String.format("The call to remove(%d) should have made %d comparisons, but made %d instead.",
-                    key, comparisons[index], result.object())
-            );
-            for (int level = 0; level < refs[i].length; level++) {
-                int currentLevel = level;
-                if (refs[i][level] == -2) {
-                    continue;
-                }
-                ListItem<ExpressNode<Integer>> previous = itemRefs.get(level).get(refs[i][level] + 1);
-                ListItem<ExpressNode<Integer>> successor = itemRefs.get(level).get(refs[i][level] + 3);
-                assertSame(
-                    previous.next,
-                    successor,
-                    context,
-                    result -> String.format("The call to remove(%d) should have removed the element at level %d and "
-                        + "the successor should be %s, but given %s.", key, currentLevel, successor, result.object())
-                );
+        for (int level = 0; level < refs.length; level++) {
+            int currentLevel = level;
+            if (refs[level] == -2) {
+                continue;
             }
+            ListItem<ExpressNode<VisitorNode<Integer>>> previous = nodes.get(level).get(refs[level] + 1);
+            ListItem<ExpressNode<VisitorNode<Integer>>> successor = nodes.get(level).get(refs[level] + 3);
+            assertSame(
+                previous.next,
+                successor,
+                context,
+                result -> String.format("The call to remove(%d) should have removed the element at level %d and "
+                    + "the successor should be %s, but given %s.", key, currentLevel, successor, result.object())
+            );
         }
     }
+
 
     /**
      * Tests if the {@link SkipList#remove(Object)} method removes all element correctly.
@@ -158,50 +146,49 @@ public class H3_PrivateTests {
      *             ("maxHeight": integer)
      *         }
      *         "keys": array of integers,
-     *         "comparisons": array of integers
+     *         "comparisons": 2D array of integers,
+     *         "empty": boolean
      *     }
      * }</pre>
      *
      * @param object      the list to test
-     * @param keys        the elements to remove
-     * @param comparisons the number of comparisons to find the correct insertion point
+     * @param key         the elements to remove
+     * @param comparisons the expected comparisons path
+     * @param empty       whether the list should be empty after the removal
      */
     @DisplayName("24 | Methode entfernt alle Elemente korrekt.")
     @ParameterizedTest(name = "Test {index}: Entfernung der Elemente {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource("h3/all_elements.json")
+    @JsonClasspathSource({
+        "h3/all/98.json", "h3/all/72.json", "h3/all/47.json", "h3/all/17.json", "h3/all/12.json", "h3/all/5.json"
+    })
     public void testRemoveAllElements(
-        @Property("list") @ConvertWith(TutorSkipListConverter.class) Object object,
-        @Property("keys") @ConvertWith(ArrayConverter.Auto.class) Integer[] keys,
-        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[] comparisons) {
-        TutorSkipList<Integer> list = (TutorSkipList<Integer>) object;
-        Context.Builder<?> builder = contextBuilder()
-            .subject(linkMethod("remove"))
-            .add("Elements to remove", Arrays.toString(keys))
-            .add("Before removal", contextList(list));
+        @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
+        @Property("key") Integer key,
+        @Property("comparisons") @ConvertWith(ArrayConverter.Auto.class) Integer[][] comparisons,
+        @Property("empty") boolean empty) {
+        @SuppressWarnings("DuplicatedCode")
+        VisitorSkipList<Integer> list = convert(object);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
+        VisitorNode<Integer> node = new VisitorNode<>(key);
+        Context context = contextH3(list, node);
 
-        for (int i = 0; i < keys.length; i++) {
-            int index = i;
-            Integer key = keys[i];
+        assertComparisons(nodes, comparisons, context);
 
-            Context context = contextH3(list, key);
-
-            assertEquals(
-                comparisons[i],
-                list.getComparisonCount(),
+        if (empty) {
+            assertNull(
+                list.head,
                 context,
-                result -> String.format("The call to remove(%d) should have made %d comparisons, but made %d instead.",
-                    key, comparisons[index], result.object())
+                result -> String.format("The call to remove(%s) should have removed the entire list, but given %s.",
+                    node, result.object())
+            );
+        } else {
+            assertNotNull(
+                list.head,
+                context,
+                result -> String.format("The call to remove(%s) should not have removed the entire list, but given %s.",
+                    node, result.object())
             );
         }
-
-        Context context = builder.add("After removal", contextList(list)).build();
-
-        assertNull(
-            list.head,
-            context,
-            result -> String.format("The call to remove(%s) should have removed the entire list, but given %s.",
-                Arrays.toString(keys), result.object())
-        );
     }
 
     /**
@@ -232,7 +219,7 @@ public class H3_PrivateTests {
         @Property("list") @ConvertWith(SkipListConverter.class) Object object,
         @Property("key") Integer key,
         @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs) {
-        SkipList<Integer> list = (SkipList<Integer>) object;
+        SkipList<Integer> list = convert(object);
 
         Context context = contextH3(list, key);
 
