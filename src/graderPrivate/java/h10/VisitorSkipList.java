@@ -38,6 +38,7 @@ public class VisitorSkipList<T> extends SkipList<VisitorNode<T>> {
     /**
      * Resets the visited nodes.
      */
+    @SuppressWarnings("rawtypes")
     private void reset() {
         ((VisitorComparator) cmp).reset();
     }
@@ -146,9 +147,9 @@ public class VisitorSkipList<T> extends SkipList<VisitorNode<T>> {
 
         @Override
         public String toString() {
-            return "VisitorComparator{" +
-                "real=" + real +
-                '}';
+            return "VisitorComparator{"
+                + "real=" + real
+                + '}';
         }
 
     }

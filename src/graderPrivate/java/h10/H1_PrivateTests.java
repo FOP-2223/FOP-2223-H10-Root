@@ -70,8 +70,7 @@ public class H1_PrivateTests {
      */
     @DisplayName("03 | Methode findet die Elemente mit einer minimalen Anzahl an Vergleichen in der obersten Ebene.")
     @ParameterizedTest(name = "Test {index}: Element {1} mit minimalen Vergleichen {2}.")
-    @JsonClasspathSource({"h1/first/22.json", "h1/first/59.json", "h1/first/70.json"
-        , "h1/first/80.json"})
+    @JsonClasspathSource({"h1/first/22.json", "h1/first/59.json", "h1/first/70.json", "h1/first/80.json"})
     public void testContainsFirstLevel(
         @Property("list") @ConvertWith(VisitorSkipListConverter.class) Object object,
         @Property("key") Integer key,

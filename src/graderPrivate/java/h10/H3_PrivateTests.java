@@ -185,8 +185,7 @@ public class H3_PrivateTests {
             assertNotNull(
                 list.head,
                 context,
-                result -> String.format("The call to remove(%s) should not have removed the entire list, but given %s" +
-                        ".",
+                result -> String.format("The call to remove(%s) should not have removed the entire list, but given %s.",
                     node, result.object())
             );
         }
