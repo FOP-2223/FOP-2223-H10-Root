@@ -59,7 +59,8 @@ public class H3_PrivateTests {
         List<ListItem<ExpressNode<VisitorNode<Integer>>>> last = nodes.get(nodes.size() - 1);
         VisitorNode<Integer> node = last.get(last.size() - 1).key.value;
 
-        Context context = contextH3(list, node);
+        // In order to not track the actual node, we have to create a new one
+        Context context = contextH3(list, new VisitorNode<>(node.getValue()));
 
         assertComparisons(nodes, comparisons, context);
 
@@ -68,7 +69,7 @@ public class H3_PrivateTests {
         assertNull(
             actual,
             context,
-            result -> String.format("The call to remove(%d) should have removed the last element, but given %s.", node,
+            result -> String.format("The call to remove(%s) should have removed the last element, but given %s.", node,
                 result.object())
         );
     }
@@ -219,7 +220,7 @@ public class H3_PrivateTests {
         @Property("list") @ConvertWith(SkipListConverter.class) Object object,
         @Property("key") Integer key,
         @Property("refs") @ConvertWith(ArrayConverter.Auto.class) Integer[] refs) {
-        SkipList<Integer> list = (SkipList<Integer>) object;
+        SkipList<Integer> list = convert(object);
 
         Context context = contextH3(list, key);
 
