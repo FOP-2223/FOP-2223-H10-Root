@@ -13,7 +13,15 @@
     "maxHeight": 6
   },
   "key": 50,
-  "comparison": 5,
+  "comparisons": [
+    [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  ],
   "numberOfElementsLevel": [
     1,
     1,

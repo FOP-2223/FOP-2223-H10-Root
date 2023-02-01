@@ -18,7 +18,11 @@
     ]
   },
   "key": 1,
-  "comparison": 1,
+  "comparisons": [
+    [
+      1
+    ]
+  ],
   "numberOfElementsLevel": [
     13
   ],
