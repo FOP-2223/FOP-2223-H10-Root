@@ -73,6 +73,8 @@ class VisitorNode<T> {
             return false;
         }
         VisitorNode<?> that = (VisitorNode<?>) o;
+        visit();
+        that.visit();
         return Objects.equals(value, that.value);
     }
 
