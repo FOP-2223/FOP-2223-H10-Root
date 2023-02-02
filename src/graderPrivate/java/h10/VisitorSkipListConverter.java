@@ -130,17 +130,6 @@ public class VisitorSkipListConverter implements ArgumentConverter {
             }
         }
 
-        Comparator<VisitorNode<Integer>> visitorCmp = new Comparator<>() {
-            @Override
-            public int compare(VisitorNode<Integer> o1, VisitorNode<Integer> o2) {
-                return cmp.compare(o1.getValue(), o2.getValue());
-            }
-
-            @Override
-            public String toString() {
-                return "Natural Order";
-            }
-        };
         VisitorSkipList<Integer> list = new VisitorSkipList<>(
             new Comparator<>() {
                 @Override

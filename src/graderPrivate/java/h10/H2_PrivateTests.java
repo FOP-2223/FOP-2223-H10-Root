@@ -29,7 +29,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertE
 public class H2_PrivateTests {
 
     /**
-     * Tests if the {@link SkipList#add(Object)}  method adds element on levels correctly and if the patg of
+     * Tests if the {@link SkipList#add(Object)}  method adds element on levels correctly and if the path of
      * comparison to find the correct insertion point is correct.
      *
      * @param object                the list to test

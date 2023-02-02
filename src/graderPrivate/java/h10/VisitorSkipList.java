@@ -21,7 +21,7 @@ public class VisitorSkipList<T> extends SkipList<VisitorNode<T>> {
      * @param probability the probability function used to determine if a node should be added on another level
      */
     public VisitorSkipList(Comparator<? super VisitorNode<T>> cmp, int maxHeight, Probability probability) {
-        super(new VisitorComparator<T>(cmp), maxHeight, probability);
+        super(new VisitorComparator<>(cmp), maxHeight, probability);
     }
 
 
@@ -32,7 +32,7 @@ public class VisitorSkipList<T> extends SkipList<VisitorNode<T>> {
      * @param maxHeight the maximum height of the skip list
      */
     public VisitorSkipList(Comparator<? super VisitorNode<T>> cmp, int maxHeight) {
-        super(new VisitorComparator<T>(cmp), maxHeight);
+        super(new VisitorComparator<>(cmp), maxHeight);
     }
 
     /**

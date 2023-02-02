@@ -77,7 +77,7 @@ public class PrivateTutorUtils {
     }
 
     /**
-     * Tests wheter the comparisons path of the given skip list is correct.
+     * Tests whether the comparisons path of the given skip list is correct.
      *
      * @param nodes       the skip list to test
      * @param comparisons the expected comparisons path
