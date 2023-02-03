@@ -27,6 +27,7 @@ jagr {
             }
         }
         val graderPrivate by creating {
+            disableTimeouts()
             parent(graderPublic)
             graderName.set("FOP-2223-H10-Private")
         }
@@ -36,7 +37,14 @@ jagr {
 dependencies {
     implementation(libs.annotations)
     implementation(libs.algoutils.student)
+    implementation("org.tudalgo:algoutils-tutor:0.7.0-SNAPSHOT")
     testImplementation(libs.junit.core)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.tudalgo:algoutils-tutor:0.7.0-SNAPSHOT")
+    }
 }
 
 application {
