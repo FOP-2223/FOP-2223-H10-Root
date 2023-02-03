@@ -274,7 +274,9 @@ public class PrivateTutorUtils {
         if (!methodLinks.isEmpty()) {
             methodLinks.forEach(link -> {
                 try {
-                    collectConstructorCalls(link.getCtElement(), calls, visited);
+                    if (link.isCtElementAvailable()) {
+                        collectConstructorCalls(link.getCtElement(), calls, visited);
+                    }
                 } catch (NullPointerException e) {
                     // ignore
                     if (!e.getMessage().equals("Cannot invoke \"String.toCharArray()\" because \"this.content\" is "
