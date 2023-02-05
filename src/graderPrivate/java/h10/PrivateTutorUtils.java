@@ -323,7 +323,11 @@ public class PrivateTutorUtils {
             .distinct()
             .map(BasicTypeLink::of)
             .collect(Collectors.toSet());
+
+        // Skip custom project classes
+        found.removeIf(link -> !link.reflection().getName().contains("h10"));
         allowedClasses.forEach(found::remove);
+
         assertEquals(
             0,
             found.size(),
