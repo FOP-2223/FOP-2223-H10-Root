@@ -1,6 +1,7 @@
 package h10;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
@@ -12,9 +13,11 @@ import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 import java.util.List;
 
 import static h10.PrivateTutorUtils.assertComparisons;
+import static h10.PrivateTutorUtils.assertNoConstructorCalls;
 import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH1;
 import static h10.PublicTutorUtils.listItemAsList;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
 /**
@@ -39,14 +42,27 @@ public class H1_PrivateTests {
         List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
         VisitorNode<Integer> node = new VisitorNode<>(key);
         Context context = contextH1(list, node);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodesAfterAction = listItemAsList(list.head);
         assertTrue(
             list.contains(node),
             context,
             result -> String.format("The call of the method contains(%s) returned %s instead of true.",
                 key, result.object())
         );
+        assertEquals(nodes, nodesAfterAction, context, result -> String.format(
+            "The call of the method contains(%s) changed the list.", key));
         assertComparisons(nodes, comparisons, context);
     }
+
+    /**
+     * Tests the mandatory requirements of the task H1.
+     */
+    @Test
+    @DisplayName("Verbindliche Anforderungen")
+    public void testRequirements() {
+        assertNoConstructorCalls("contains");
+    }
+
 
     /**
      * Tests if the {@link SkipList#contains(Object)} method returns {@code true} if the given element is in the list
