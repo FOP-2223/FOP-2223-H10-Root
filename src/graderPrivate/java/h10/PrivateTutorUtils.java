@@ -248,9 +248,9 @@ public class PrivateTutorUtils {
         element.getElements(CtConstructorCall.class::isInstance).stream()
             .map(CtConstructorCall.class::cast)
             .map(CtConstructorCall::getExecutable)
+            .map(CtExecutableReference::getActualConstructor)
             // null if the constructor is not found
             .filter(Predicate.not(Objects::isNull))
-            .map(CtExecutableReference::getActualConstructor)
             .map(BasicConstructorLink::of)
             .filter(Predicate.not(visited::contains))
             .distinct()
