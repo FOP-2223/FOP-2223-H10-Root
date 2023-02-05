@@ -17,6 +17,7 @@ import static h10.PrivateTutorUtils.assertNoConstructorCalls;
 import static h10.PrivateTutorUtils.convert;
 import static h10.PublicTutorUtils.contextH1;
 import static h10.PublicTutorUtils.listItemAsList;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
 /**
@@ -41,12 +42,15 @@ public class H1_PrivateTests {
         List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
         VisitorNode<Integer> node = new VisitorNode<>(key);
         Context context = contextH1(list, node);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodesAfterAction = listItemAsList(list.head);
         assertTrue(
             list.contains(node),
             context,
             result -> String.format("The call of the method contains(%s) returned %s instead of true.",
                 key, result.object())
         );
+        assertEquals(nodes, nodesAfterAction, context, result -> String.format(
+            "The call of the method contains(%s) changed the list.", key));
         assertComparisons(nodes, comparisons, context);
     }
 
@@ -159,4 +163,5 @@ public class H1_PrivateTests {
     ) {
         assertContains(object, key, comparisons);
     }
+
 }

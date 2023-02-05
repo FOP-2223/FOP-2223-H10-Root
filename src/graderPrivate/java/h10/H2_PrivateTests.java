@@ -19,6 +19,8 @@ import static h10.PublicTutorUtils.PROBABILITY_ALWAYS_ADD;
 import static h10.PublicTutorUtils.contextH2;
 import static h10.PublicTutorUtils.listItemAsList;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 
 /**
  * Defines the private JUnit test cases related to the task H2.
@@ -29,6 +31,37 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertE
 @DisplayName("H2")
 @TestForSubmission
 public class H2_PrivateTests {
+
+    /**
+     * Tests whether the elements before insertion are still in the list after insertion.
+     *
+     * @param before  the list before insertion
+     * @param after   the list after insertion
+     * @param context the context of the test
+     */
+    private void assertNodesExists(
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> before,
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> after,
+        Context context
+    ) {
+        for (List<ListItem<ExpressNode<VisitorNode<Integer>>>> level : before) {
+            ListItem<ExpressNode<VisitorNode<Integer>>> first = level.get(0);
+            List<ListItem<ExpressNode<VisitorNode<Integer>>>> current = after.stream()
+                .filter(list -> list.get(0).equals(level.get(0))).findFirst()
+                .orElse(null);
+            String name = first.getClass().getName() + "@" + Integer.toHexString(first.hashCode());
+            assertNotNull(current, context, result -> String.format("Could not find level with sentinel node %s in the "
+                + "list after the call to add(%s).", name, result.object()));
+            for (ListItem<ExpressNode<VisitorNode<Integer>>> item : level) {
+                assert current != null;
+                assertTrue(
+                    current.contains(item),
+                    context,
+                    result -> String.format("The call to add(%s) should not remove any nodes.", item.key.value)
+                );
+            }
+        }
+    }
 
     /**
      * Tests if the {@link SkipList#add(Object)}  method adds element on levels correctly and if the path of
@@ -47,8 +80,10 @@ public class H2_PrivateTests {
         List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodes = listItemAsList(list.head);
         VisitorNode<Integer> toAdd = new VisitorNode<>(key);
         Context context = contextH2(list, toAdd);
+        List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> nodesAfterAction = listItemAsList(list.head);
 
         assertComparisons(nodes, comparisons, context);
+        assertNodesExists(nodes, nodesAfterAction, context);
 
         List<List<ListItem<ExpressNode<VisitorNode<Integer>>>>> itemRefs = listItemAsList(list.head);
 
