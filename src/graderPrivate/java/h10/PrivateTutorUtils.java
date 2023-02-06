@@ -321,11 +321,11 @@ public class PrivateTutorUtils {
             .map(BasicConstructorLink::reflection)
             .map(Constructor::getDeclaringClass)
             .distinct()
+            // Ignore custom project classes and throwables
+            .filter(clazz ->  !clazz.getName().contains("h10") && !Throwable.class.isAssignableFrom(clazz))
             .map(BasicTypeLink::of)
             .collect(Collectors.toSet());
 
-        // Skip custom project classes
-        found.removeIf(link -> !link.reflection().getName().contains("h10"));
         allowedClasses.forEach(found::remove);
 
         assertEquals(
