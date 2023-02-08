@@ -248,9 +248,9 @@ public class PrivateTutorUtils {
         element.getElements(CtConstructorCall.class::isInstance).stream()
             .map(CtConstructorCall.class::cast)
             .map(CtConstructorCall::getExecutable)
+            .map(CtExecutableReference::getActualConstructor)
             // null if the constructor is not found
             .filter(Predicate.not(Objects::isNull))
-            .map(CtExecutableReference::getActualConstructor)
             .map(BasicConstructorLink::of)
             .filter(Predicate.not(visited::contains))
             .distinct()
@@ -321,9 +321,13 @@ public class PrivateTutorUtils {
             .map(BasicConstructorLink::reflection)
             .map(Constructor::getDeclaringClass)
             .distinct()
+            // Ignore custom project classes and throwables
+            .filter(clazz ->  !clazz.getName().contains("h10") && !Throwable.class.isAssignableFrom(clazz))
             .map(BasicTypeLink::of)
             .collect(Collectors.toSet());
+
         allowedClasses.forEach(found::remove);
+
         assertEquals(
             0,
             found.size(),
